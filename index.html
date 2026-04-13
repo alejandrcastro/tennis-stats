@@ -8,17 +8,16 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green:        #2d6a4f;
-      --green-mid:    #40916c;
-      --green-light:  #52b788;
-      --green-bg:     #d8f3dc;
-      --orange:       #d04a00;
-      --orange-bg:    #fff0eb;
-      --bg:           #f0f4f0;
-      --card:         #ffffff;
-      --text:         #1a1a1a;
-      --muted:        #6c757d;
-      --border:       #e4e8e4;
+      --green:       #2d6a4f;
+      --green-mid:   #40916c;
+      --green-bg:    #d8f3dc;
+      --orange:      #d04a00;
+      --orange-bg:   #fff0eb;
+      --bg:          #f0f4f0;
+      --card:        #ffffff;
+      --text:        #1a1a1a;
+      --muted:       #6c757d;
+      --border:      #e4e8e4;
     }
 
     body {
@@ -32,13 +31,11 @@
     header {
       background: var(--green);
       color: white;
-      padding: 28px 32px 20px;
-      display: flex;
-      align-items: flex-end;
-      gap: 16px;
+      padding: 24px 32px 18px;
     }
-    header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
-    header .sub { font-size: 0.85rem; opacity: 0.65; margin-bottom: 3px; }
+    header h1   { font-size: 1.55rem; font-weight: 800; letter-spacing: -0.02em; }
+    header .sub { font-size: 0.8rem; opacity: 0.6; margin-bottom: 4px; }
+    header .updated { font-size: 0.75rem; opacity: 0.55; margin-top: 6px; }
 
     /* ── STAT PILLS ── */
     .stat-bar {
@@ -47,139 +44,97 @@
       gap: 1px;
       background: var(--green-mid);
     }
-    .stat-pill {
-      background: white;
-      padding: 14px 16px;
-      text-align: center;
-    }
+    .stat-pill { background: white; padding: 14px 12px; text-align: center; }
     .stat-pill .val {
-      font-size: 1.7rem;
-      font-weight: 800;
-      color: var(--green);
-      line-height: 1;
+      font-size: 1.65rem; font-weight: 800;
+      color: var(--green); line-height: 1;
     }
     .stat-pill .lbl {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-top: 4px;
+      font-size: 0.67rem; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted); margin-top: 4px;
     }
 
     /* ── LAYOUT ── */
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 24px 24px 48px;
+      padding: 22px 22px 48px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
-
-    .row { display: grid; gap: 20px; }
+    .row   { display: grid; gap: 18px; }
     .row-3 { grid-template-columns: 2.2fr 1fr 1fr; }
 
     /* ── CARDS ── */
     .card {
       background: var(--card);
       border-radius: 14px;
-      padding: 20px 24px;
+      padding: 18px 22px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.07);
     }
     .card-title {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--muted);
-      margin-bottom: 16px;
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--muted); margin-bottom: 14px;
     }
-    .chart-wrap { position: relative; height: 220px; }
+    .chart-wrap { position: relative; height: 210px; }
 
-    /* ── FORM CHART ── */
-    .form-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+    /* ── FORM ── */
+    .form-row { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
     .form-dot {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: white;
-      flex-shrink: 0;
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem; font-weight: 700; color: white;
     }
     .form-dot.w { background: var(--green-mid); }
     .form-dot.l { background: var(--orange); }
-    .form-dot-label { font-size: 0.7rem; color: var(--muted); margin-left: 4px; }
+    .form-lbl   { font-size: 0.7rem; color: var(--muted); margin-left: 4px; }
 
     /* ── TABLE ── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     th {
-      text-align: left;
-      padding: 8px 12px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      border-bottom: 2px solid var(--border);
+      text-align: left; padding: 8px 12px;
+      font-size: 0.67rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--muted); border-bottom: 2px solid var(--border);
       white-space: nowrap;
     }
-    td {
-      padding: 11px 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: #f6faf6; }
+    tbody tr:hover td { background: #f5faf5; }
 
     .badge {
-      display: inline-block;
-      padding: 2px 7px;
-      border-radius: 5px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
+      display: inline-block; padding: 2px 7px;
+      border-radius: 5px; font-size: 0.72rem; font-weight: 700;
     }
-    .w-badge { background: var(--green-bg); color: var(--green); }
-    .l-badge { background: var(--orange-bg); color: var(--orange); }
-    .d-badge { background: #ebebf5; color: #5555aa; margin-left: 4px; }
+    .w-badge  { background: var(--green-bg); color: var(--green); }
+    .l-badge  { background: var(--orange-bg); color: var(--orange); }
+    .d-badge  { background: #ebebf5; color: #5555aa; margin-left: 3px; }
 
-    .delta { font-weight: 700; font-size: 0.8rem; }
-    .delta.pos { color: var(--green-mid); }
-    .delta.neg { color: var(--orange); }
+    .delta      { font-weight: 700; font-size: 0.8rem; }
+    .delta.pos  { color: var(--green-mid); }
+    .delta.neg  { color: var(--orange); }
     .delta.zero { color: var(--muted); }
 
     .rival-name { font-weight: 600; }
-    .rival-lk   { font-size: 0.75rem; color: var(--muted); }
-    .partner    { font-size: 0.75rem; color: #888; }
+    .rival-lk, .partner-txt { font-size: 0.75rem; color: var(--muted); display: block; }
 
-    .context-cell {
-      max-width: 220px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 0.78rem;
-      color: var(--muted);
+    .ctx-cell {
+      max-width: 200px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+      font-size: 0.78rem; color: var(--muted);
     }
 
     /* ── LOADING / ERROR ── */
-    .center-msg { text-align: center; padding: 48px; color: var(--muted); font-size: 0.95rem; }
+    .msg { text-align: center; padding: 40px; color: var(--muted); font-size: 0.95rem; }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .stat-bar { grid-template-columns: repeat(3, 1fr); }
-      .row-3 { grid-template-columns: 1fr; }
-      header { padding: 20px 16px 16px; }
-      main { padding: 16px 12px 40px; }
+      .row-3    { grid-template-columns: 1fr; }
+      header    { padding: 18px 16px 14px; }
+      main      { padding: 14px 12px 40px; }
     }
     @media (max-width: 500px) {
       .stat-bar { grid-template-columns: repeat(2, 1fr); }
@@ -189,10 +144,9 @@
 <body>
 
 <header>
-  <div>
-    <div class="sub">tennis.de · Estadísticas</div>
-    <h1>🎾 <span id="playerName">Cargando…</span></h1>
-  </div>
+  <div class="sub">tennis.de · Estadísticas</div>
+  <h1>🎾 <span id="playerName">Cargando…</span></h1>
+  <div class="updated" id="updatedAt"></div>
 </header>
 
 <div class="stat-bar">
@@ -216,72 +170,56 @@
     </div>
     <div class="card">
       <div class="card-title">Últimas 10</div>
-      <div id="formDots" class="form-row center-msg">…</div>
+      <div id="formDots" class="form-row msg">…</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title">Historial de Partidos</div>
     <div class="table-wrap">
-      <div id="tableWrap" class="center-msg">Cargando partidos…</div>
+      <div id="tableWrap" class="msg">Cargando partidos…</div>
     </div>
   </div>
 </main>
 
-<!-- Dependencies from CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-
 <script>
-  // ╔══════════════════════════════════════════════════════════════╗
-  // ║  CONFIGURACIÓN — completá con tus valores de Supabase       ║
-  // ╚══════════════════════════════════════════════════════════════╝
-  const SUPABASE_URL      = 'https://TU_PROYECTO.supabase.co';
-  const SUPABASE_ANON_KEY = 'TU_ANON_KEY';
-  const PLAYER_ID         = 'NU3106825';
-  // ═══════════════════════════════════════════════════════════════
-
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // ── CONFIG ───────────────────────────────────────────────────────────────────
+  const PLAYER_ID = 'NU3106825';
+  // ─────────────────────────────────────────────────────────────────────────────
 
   async function init() {
-    const [mRes, lkRes] = await Promise.all([
-      sb.from('tennis_matches')
-        .select('*')
-        .eq('player_id', PLAYER_ID)
-        .order('match_date', { ascending: false }),
-      sb.from('tennis_lk_history')
-        .select('lk, scraped_at')
-        .eq('player_id', PLAYER_ID)
-        .order('scraped_at', { ascending: true })
-    ]);
+    const res = await fetch('./data.json');
+    if (!res.ok) throw new Error(`No se pudo cargar data.json (${res.status})`);
+    const data = await res.json();
 
-    if (mRes.error) { console.error(mRes.error); return; }
+    const player = data.players.find(p => p.id === PLAYER_ID) ?? data.players[0];
+    const matches = player.matches ?? [];
 
-    const matches   = mRes.data  || [];
-    const lkHistory = lkRes.data || [];
+    document.getElementById('playerName').textContent = player.name;
+    document.getElementById('updatedAt').textContent  =
+      'Actualizado: ' + new Date(data.generated_at).toLocaleDateString('es-AR', {
+        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
 
-    if (matches.length > 0) {
-      document.getElementById('playerName').textContent = matches[0].player_name;
-    }
-
-    renderStats(matches, lkHistory);
-    renderLkChart(matches, lkHistory);
+    renderStats(matches, player.lk);
+    renderLkChart(matches, parseFloat(String(player.lk).replace(',', '.')));
     renderPieChart(matches);
     renderForm(matches);
     renderTable(matches);
   }
 
-  // ── STATS BAR ────────────────────────────────────────────────────
-  function renderStats(matches, lkHistory) {
-    const wins     = matches.filter(m => m.won).length;
-    const singles  = matches.filter(m => !m.is_doubles).length;
-    const doubles  = matches.filter(m =>  m.is_doubles).length;
-    const rate     = matches.length ? Math.round(wins / matches.length * 100) : 0;
-    const curLk    = lkHistory.length
-      ? lkHistory.at(-1).lk.toFixed(1).replace('.', ',')
-      : (matches.find(m => m.player_lk)?.player_lk?.toFixed(1).replace('.', ',') ?? '—');
+  // ── STATS BAR ────────────────────────────────────────────────────────────────
+  function renderStats(matches, lkRaw) {
+    const wins    = matches.filter(m => m.won).length;
+    const singles = matches.filter(m => !m.is_doubles).length;
+    const doubles = matches.filter(m =>  m.is_doubles).length;
+    const rate    = matches.length ? Math.round(wins / matches.length * 100) : 0;
+    const lk      = typeof lkRaw === 'number'
+      ? lkRaw.toFixed(1).replace('.', ',')
+      : String(lkRaw ?? '—');
 
-    document.getElementById('sLk').textContent      = curLk;
+    document.getElementById('sLk').textContent     = lk;
     document.getElementById('sTotal').textContent   = matches.length;
     document.getElementById('sWins').textContent    = wins;
     document.getElementById('sRate').textContent    = rate + '%';
@@ -289,24 +227,21 @@
     document.getElementById('sDoubles').textContent = doubles;
   }
 
-  // ── LK CHART ─────────────────────────────────────────────────────
-  function renderLkChart(matches, lkHistory) {
-    // Build time series from player_lk in each match (already sorted desc → reverse)
-    const fromMatches = [...matches]
-      .filter(m => m.player_lk && m.match_date)
+  // ── LK CHART ─────────────────────────────────────────────────────────────────
+  function renderLkChart(matches, currentLk) {
+    // Matches vienen ordenados desc; los revertimos para oldest→newest
+    const points = [...matches]
+      .filter(m => m.player_lk != null && m.match_date)
       .reverse()
-      .map(m => ({ x: m.match_date.slice(0, 10), y: m.player_lk }));
+      .map(m => ({ x: m.match_date, y: m.player_lk }));
 
-    // Merge scraped LK snapshots
-    const fromHistory = lkHistory.map(h => ({ x: h.scraped_at.slice(0, 10), y: h.lk }));
-
-    const merged = [...fromMatches, ...fromHistory]
-      .sort((a, b) => a.x.localeCompare(b.x));
-
-    // Keep one point per date (last value wins)
-    const byDate = new Map();
-    merged.forEach(p => byDate.set(p.x, p.y));
-    const points = [...byDate.entries()].map(([x, y]) => ({ x, y }));
+    // Agregar el LK actual como punto final si es distinto
+    if (currentLk && points.length) {
+      const today = new Date().toISOString().slice(0, 10);
+      if (points.at(-1).y !== currentLk) {
+        points.push({ x: today, y: currentLk });
+      }
+    }
 
     new Chart(document.getElementById('lkChart'), {
       type: 'line',
@@ -315,25 +250,21 @@
         datasets: [{
           data: points.map(p => p.y),
           borderColor: '#40916c',
-          backgroundColor: 'rgba(64,145,108,0.10)',
-          pointRadius: 4,
-          pointBackgroundColor: '#40916c',
-          pointHoverRadius: 6,
-          tension: 0.35,
-          fill: true,
-          borderWidth: 2,
+          backgroundColor: 'rgba(64,145,108,0.09)',
+          pointRadius: 4, pointBackgroundColor: '#40916c',
+          pointHoverRadius: 6, tension: 0.35, fill: true, borderWidth: 2,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: {
-          callbacks: { label: c => ` LK ${c.raw.toFixed(1).replace('.', ',')}` }
-        }},
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: c => ` LK ${c.raw.toFixed(1).replace('.', ',')}` } }
+        },
         scales: {
           x: { ticks: { maxTicksLimit: 7, font: { size: 10 } }, grid: { display: false } },
           y: {
-            reverse: true,  // LK más bajo = mejor → va arriba
+            reverse: true,  // LK más bajo = mejor → va arriba en el gráfico
             ticks: { font: { size: 11 }, callback: v => v.toFixed(1).replace('.', ',') },
             grid: { color: '#f0f0f0' }
           }
@@ -342,7 +273,7 @@
     });
   }
 
-  // ── PIE CHART ────────────────────────────────────────────────────
+  // ── PIE CHART ────────────────────────────────────────────────────────────────
   function renderPieChart(matches) {
     const wins   = matches.filter(m => m.won).length;
     const losses = matches.length - wins;
@@ -353,16 +284,13 @@
         datasets: [{
           data: [wins, losses],
           backgroundColor: ['#40916c', '#d04a00'],
-          borderWidth: 0,
-          hoverOffset: 4,
+          borderWidth: 0, hoverOffset: 4,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '62%',
+        responsive: true, maintainAspectRatio: false, cutout: '62%',
         plugins: {
-          legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 16, boxWidth: 12 } },
+          legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14, boxWidth: 12 } },
           tooltip: {
             callbacks: {
               label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw / matches.length * 100)}%)`
@@ -373,53 +301,57 @@
     });
   }
 
-  // ── FORM (últimas 10) ─────────────────────────────────────────────
+  // ── FORM ─────────────────────────────────────────────────────────────────────
   function renderForm(matches) {
-    const last10 = matches.slice(0, 10).reverse(); // oldest → newest
+    const last10 = matches.slice(0, 10).reverse();
     const container = document.getElementById('formDots');
     if (!last10.length) { container.textContent = 'Sin datos'; return; }
-
     container.innerHTML = '';
     last10.forEach(m => {
       const dot = document.createElement('div');
       dot.className = `form-dot ${m.won ? 'w' : 'l'}`;
-      dot.title = `${m.match_date?.slice(0,10) ?? ''} · ${m.rivals ?? ''}`;
+      dot.title = `${m.match_date ?? ''} · ${m.rivals ?? ''}`;
       dot.textContent = m.won ? 'G' : 'P';
       container.appendChild(dot);
     });
-    const label = document.createElement('span');
-    label.className = 'form-dot-label';
-    const wins = last10.filter(m => m.won).length;
-    label.textContent = `${wins}/${last10.length}`;
-    container.appendChild(label);
+    const lbl = document.createElement('span');
+    lbl.className = 'form-lbl';
+    lbl.textContent = `${last10.filter(m => m.won).length}/${last10.length}`;
+    container.appendChild(lbl);
   }
 
-  // ── TABLE ─────────────────────────────────────────────────────────
+  // ── TABLE ─────────────────────────────────────────────────────────────────────
   function renderTable(matches) {
     if (!matches.length) {
       document.getElementById('tableWrap').innerHTML =
-        '<div class="center-msg">No hay partidos registrados.</div>';
+        '<div class="msg">No hay partidos registrados.</div>';
       return;
     }
 
     const rows = matches.map(m => {
-      const date  = m.match_date ? m.match_date.slice(0,10).split('-').reverse().join('.') : '—';
-      const res   = m.won
+      // Fecha: "2026-03-08" → "08.03.2026"
+      const date = m.match_date
+        ? m.match_date.slice(0, 10).split('-').reverse().join('.')
+        : '—';
+
+      const res  = m.won
         ? '<span class="badge w-badge">G</span>'
         : '<span class="badge l-badge">P</span>';
-      const type  = m.is_doubles ? '<span class="badge d-badge">D</span>' : '';
+      const type = m.is_doubles ? '<span class="badge d-badge">D</span>' : '';
 
       const rival     = m.rivals ?? '—';
-      const rivalLkTxt = m.rivals_lk ? `<br><span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
-      const partnerTxt = m.partner   ? `<br><span class="partner">con ${m.partner}${m.partner_lk ? ` (${m.partner_lk.toFixed(1).replace('.',',')})` : ''}</span>` : '';
+      const rivalLk   = m.rivals_lk ? `<span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
+      const partnerTx = m.partner
+        ? `<span class="partner-txt">con ${m.partner}${m.partner_lk != null ? ` (${m.partner_lk.toFixed(1).replace('.', ',')})` : ''}</span>`
+        : '';
 
       const myLk  = m.player_lk != null ? m.player_lk.toFixed(1).replace('.', ',') : '—';
       const score = m.score ?? '—';
 
-      let deltaClass = 'zero', deltaTxt = '—';
+      let dCls = 'zero', dTxt = '—';
       if (m.lk_change != null) {
-        deltaClass = m.lk_change > 0 ? 'pos' : m.lk_change < 0 ? 'neg' : 'zero';
-        deltaTxt = (m.lk_change > 0 ? '+' : '') + m.lk_change.toFixed(1).replace('.', ',');
+        dCls = m.lk_change > 0 ? 'pos' : m.lk_change < 0 ? 'neg' : 'zero';
+        dTxt = (m.lk_change > 0 ? '+' : '') + m.lk_change.toFixed(1).replace('.', ',');
       }
 
       return `<tr>
@@ -427,12 +359,12 @@
         <td>${res}${type}</td>
         <td>
           <span class="rival-name">${rival}</span>
-          ${rivalLkTxt}${partnerTxt}
+          ${rivalLk}${partnerTx}
         </td>
         <td style="white-space:nowrap;font-weight:600">${score}</td>
         <td style="white-space:nowrap">${myLk}</td>
-        <td><span class="delta ${deltaClass}">${deltaTxt}</span></td>
-        <td class="context-cell" title="${m.context ?? ''}">${m.context ?? '—'}</td>
+        <td><span class="delta ${dCls}">${dTxt}</span></td>
+        <td class="ctx-cell" title="${m.context ?? ''}">${m.context ?? '—'}</td>
       </tr>`;
     }).join('');
 
@@ -448,7 +380,8 @@
 
   init().catch(err => {
     document.getElementById('tableWrap').innerHTML =
-      `<div class="center-msg">Error cargando datos: ${err.message}</div>`;
+      `<div class="msg">Error: ${err.message}</div>`;
+    console.error(err);
   });
 </script>
 </body>
