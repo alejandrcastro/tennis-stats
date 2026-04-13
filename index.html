@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tennis Stats</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:        #2d6a4f;
+      --green-mid:    #40916c;
+      --green-light:  #52b788;
+      --green-bg:     #d8f3dc;
+      --orange:       #d04a00;
+      --orange-bg:    #fff0eb;
+      --bg:           #f0f4f0;
+      --card:         #ffffff;
+      --text:         #1a1a1a;
+      --muted:        #6c757d;
+      --border:       #e4e8e4;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--green);
+      color: white;
+      padding: 28px 32px 20px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+    }
+    header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+    header .sub { font-size: 0.85rem; opacity: 0.65; margin-bottom: 3px; }
+
+    /* ── STAT PILLS ── */
+    .stat-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1px;
+      background: var(--green-mid);
+    }
+    .stat-pill {
+      background: white;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .stat-pill .val {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1;
+    }
+    .stat-pill .lbl {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 24px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .row { display: grid; gap: 20px; }
+    .row-3 { grid-template-columns: 2.2fr 1fr 1fr; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* ── FORM CHART ── */
+    .form-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .form-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .form-dot.w { background: var(--green-mid); }
+    .form-dot.l { background: var(--orange); }
+    .form-dot-label { font-size: 0.7rem; color: var(--muted); margin-left: 4px; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f6faf6; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .w-badge { background: var(--green-bg); color: var(--green); }
+    .l-badge { background: var(--orange-bg); color: var(--orange); }
+    .d-badge { background: #ebebf5; color: #5555aa; margin-left: 4px; }
+
+    .delta { font-weight: 700; font-size: 0.8rem; }
+    .delta.pos { color: var(--green-mid); }
+    .delta.neg { color: var(--orange); }
+    .delta.zero { color: var(--muted); }
+
+    .rival-name { font-weight: 600; }
+    .rival-lk   { font-size: 0.75rem; color: var(--muted); }
+    .partner    { font-size: 0.75rem; color: #888; }
+
+    .context-cell {
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* ── LOADING / ERROR ── */
+    .center-msg { text-align: center; padding: 48px; color: var(--muted); font-size: 0.95rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .stat-bar { grid-template-columns: repeat(3, 1fr); }
+      .row-3 { grid-template-columns: 1fr; }
+      header { padding: 20px 16px 16px; }
+      main { padding: 16px 12px 40px; }
+    }
+    @media (max-width: 500px) {
+      .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="sub">tennis.de · Estadísticas</div>
+    <h1>🎾 <span id="playerName">Cargando…</span></h1>
+  </div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat-pill"><div class="val" id="sLk">—</div><div class="lbl">LK Actual</div></div>
+  <div class="stat-pill"><div class="val" id="sTotal">—</div><div class="lbl">Partidos</div></div>
+  <div class="stat-pill"><div class="val" id="sWins">—</div><div class="lbl">Ganados</div></div>
+  <div class="stat-pill"><div class="val" id="sRate">—</div><div class="lbl">Win Rate</div></div>
+  <div class="stat-pill"><div class="val" id="sSingles">—</div><div class="lbl">Singles</div></div>
+  <div class="stat-pill"><div class="val" id="sDoubles">—</div><div class="lbl">Dobles</div></div>
+</div>
+
+<main>
+  <div class="row row-3">
+    <div class="card">
+      <div class="card-title">Evolución de LK</div>
+      <div class="chart-wrap"><canvas id="lkChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Victorias / Derrotas</div>
+      <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Últimas 10</div>
+      <div id="formDots" class="form-row center-msg">…</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Historial de Partidos</div>
+    <div class="table-wrap">
+      <div id="tableWrap" class="center-msg">Cargando partidos…</div>
+    </div>
+  </div>
+</main>
+
+<!-- Dependencies from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+<script>
+  // ╔══════════════════════════════════════════════════════════════╗
+  // ║  CONFIGURACIÓN — completá con tus valores de Supabase       ║
+  // ╚══════════════════════════════════════════════════════════════╝
+  const SUPABASE_URL      = 'https://TU_PROYECTO.supabase.co';
+  const SUPABASE_ANON_KEY = 'TU_ANON_KEY';
+  const PLAYER_ID         = 'NU3106825';
+  // ═══════════════════════════════════════════════════════════════
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  async function init() {
+    const [mRes, lkRes] = await Promise.all([
+      sb.from('tennis_matches')
+        .select('*')
+        .eq('player_id', PLAYER_ID)
+        .order('match_date', { ascending: false }),
+      sb.from('tennis_lk_history')
+        .select('lk, scraped_at')
+        .eq('player_id', PLAYER_ID)
+        .order('scraped_at', { ascending: true })
+    ]);
+
+    if (mRes.error) { console.error(mRes.error); return; }
+
+    const matches   = mRes.data  || [];
+    const lkHistory = lkRes.data || [];
+
+    if (matches.length > 0) {
+      document.getElementById('playerName').textContent = matches[0].player_name;
+    }
+
+    renderStats(matches, lkHistory);
+    renderLkChart(matches, lkHistory);
+    renderPieChart(matches);
+    renderForm(matches);
+    renderTable(matches);
+  }
+
+  // ── STATS BAR ────────────────────────────────────────────────────
+  function renderStats(matches, lkHistory) {
+    const wins     = matches.filter(m => m.won).length;
+    const singles  = matches.filter(m => !m.is_doubles).length;
+    const doubles  = matches.filter(m =>  m.is_doubles).length;
+    const rate     = matches.length ? Math.round(wins / matches.length * 100) : 0;
+    const curLk    = lkHistory.length
+      ? lkHistory.at(-1).lk.toFixed(1).replace('.', ',')
+      : (matches.find(m => m.player_lk)?.player_lk?.toFixed(1).replace('.', ',') ?? '—');
+
+    document.getElementById('sLk').textContent      = curLk;
+    document.getElementById('sTotal').textContent   = matches.length;
+    document.getElementById('sWins').textContent    = wins;
+    document.getElementById('sRate').textContent    = rate + '%';
+    document.getElementById('sSingles').textContent = singles;
+    document.getElementById('sDoubles').textContent = doubles;
+  }
+
+  // ── LK CHART ─────────────────────────────────────────────────────
+  function renderLkChart(matches, lkHistory) {
+    // Build time series from player_lk in each match (already sorted desc → reverse)
+    const fromMatches = [...matches]
+      .filter(m => m.player_lk && m.match_date)
+      .reverse()
+      .map(m => ({ x: m.match_date.slice(0, 10), y: m.player_lk }));
+
+    // Merge scraped LK snapshots
+    const fromHistory = lkHistory.map(h => ({ x: h.scraped_at.slice(0, 10), y: h.lk }));
+
+    const merged = [...fromMatches, ...fromHistory]
+      .sort((a, b) => a.x.localeCompare(b.x));
+
+    // Keep one point per date (last value wins)
+    const byDate = new Map();
+    merged.forEach(p => byDate.set(p.x, p.y));
+    const points = [...byDate.entries()].map(([x, y]) => ({ x, y }));
+
+    new Chart(document.getElementById('lkChart'), {
+      type: 'line',
+      data: {
+        labels: points.map(p => p.x),
+        datasets: [{
+          data: points.map(p => p.y),
+          borderColor: '#40916c',
+          backgroundColor: 'rgba(64,145,108,0.10)',
+          pointRadius: 4,
+          pointBackgroundColor: '#40916c',
+          pointHoverRadius: 6,
+          tension: 0.35,
+          fill: true,
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: c => ` LK ${c.raw.toFixed(1).replace('.', ',')}` }
+        }},
+        scales: {
+          x: { ticks: { maxTicksLimit: 7, font: { size: 10 } }, grid: { display: false } },
+          y: {
+            reverse: true,  // LK más bajo = mejor → va arriba
+            ticks: { font: { size: 11 }, callback: v => v.toFixed(1).replace('.', ',') },
+            grid: { color: '#f0f0f0' }
+          }
+        }
+      }
+    });
+  }
+
+  // ── PIE CHART ────────────────────────────────────────────────────
+  function renderPieChart(matches) {
+    const wins   = matches.filter(m => m.won).length;
+    const losses = matches.length - wins;
+    new Chart(document.getElementById('pieChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Ganados', 'Perdidos'],
+        datasets: [{
+          data: [wins, losses],
+          backgroundColor: ['#40916c', '#d04a00'],
+          borderWidth: 0,
+          hoverOffset: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 16, boxWidth: 12 } },
+          tooltip: {
+            callbacks: {
+              label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw / matches.length * 100)}%)`
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // ── FORM (últimas 10) ─────────────────────────────────────────────
+  function renderForm(matches) {
+    const last10 = matches.slice(0, 10).reverse(); // oldest → newest
+    const container = document.getElementById('formDots');
+    if (!last10.length) { container.textContent = 'Sin datos'; return; }
+
+    container.innerHTML = '';
+    last10.forEach(m => {
+      const dot = document.createElement('div');
+      dot.className = `form-dot ${m.won ? 'w' : 'l'}`;
+      dot.title = `${m.match_date?.slice(0,10) ?? ''} · ${m.rivals ?? ''}`;
+      dot.textContent = m.won ? 'G' : 'P';
+      container.appendChild(dot);
+    });
+    const label = document.createElement('span');
+    label.className = 'form-dot-label';
+    const wins = last10.filter(m => m.won).length;
+    label.textContent = `${wins}/${last10.length}`;
+    container.appendChild(label);
+  }
+
+  // ── TABLE ─────────────────────────────────────────────────────────
+  function renderTable(matches) {
+    if (!matches.length) {
+      document.getElementById('tableWrap').innerHTML =
+        '<div class="center-msg">No hay partidos registrados.</div>';
+      return;
+    }
+
+    const rows = matches.map(m => {
+      const date  = m.match_date ? m.match_date.slice(0,10).split('-').reverse().join('.') : '—';
+      const res   = m.won
+        ? '<span class="badge w-badge">G</span>'
+        : '<span class="badge l-badge">P</span>';
+      const type  = m.is_doubles ? '<span class="badge d-badge">D</span>' : '';
+
+      const rival     = m.rivals ?? '—';
+      const rivalLkTxt = m.rivals_lk ? `<br><span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
+      const partnerTxt = m.partner   ? `<br><span class="partner">con ${m.partner}${m.partner_lk ? ` (${m.partner_lk.toFixed(1).replace('.',',')})` : ''}</span>` : '';
+
+      const myLk  = m.player_lk != null ? m.player_lk.toFixed(1).replace('.', ',') : '—';
+      const score = m.score ?? '—';
+
+      let deltaClass = 'zero', deltaTxt = '—';
+      if (m.lk_change != null) {
+        deltaClass = m.lk_change > 0 ? 'pos' : m.lk_change < 0 ? 'neg' : 'zero';
+        deltaTxt = (m.lk_change > 0 ? '+' : '') + m.lk_change.toFixed(1).replace('.', ',');
+      }
+
+      return `<tr>
+        <td style="white-space:nowrap">${date}</td>
+        <td>${res}${type}</td>
+        <td>
+          <span class="rival-name">${rival}</span>
+          ${rivalLkTxt}${partnerTxt}
+        </td>
+        <td style="white-space:nowrap;font-weight:600">${score}</td>
+        <td style="white-space:nowrap">${myLk}</td>
+        <td><span class="delta ${deltaClass}">${deltaTxt}</span></td>
+        <td class="context-cell" title="${m.context ?? ''}">${m.context ?? '—'}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('tableWrap').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Fecha</th><th>Res.</th><th>Rival</th>
+          <th>Score</th><th>Mi LK</th><th>Δ LK</th><th>Competición</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  init().catch(err => {
+    document.getElementById('tableWrap').innerHTML =
+      `<div class="center-msg">Error cargando datos: ${err.message}</div>`;
+  });
+</script>
+</body>
+</html>
