@@ -291,6 +291,12 @@
     </div>
   </div>
 
+  <!-- ── DISTRIBUCIÓN POR LK DE RIVAL ── -->
+  <div class="card">
+    <div class="card-title">Partidos por LK del rival <span style="font-weight:400;color:var(--muted)">(dobles: promedio de los dos)</span></div>
+    <div style="position:relative;height:240px"><canvas id="lkDistChart"></canvas></div>
+  </div>
+
   <!-- ── POR TIPO / RIVAL ── -->
   <div class="section-label">Desglose</div>
   <div class="stats-grid">
@@ -442,6 +448,7 @@
     renderMonthlyChart(matches);
     renderScoreDistChart(matches);
     renderSeasonSplit(matches);
+    renderLkDistChart(matches);
     renderH2H(matches);
     renderTable(matches);
   }
@@ -1024,6 +1031,78 @@
             ticks: { color: '#7d8590', font: { size: 11 } },
             grid: { color: '#21262d' }
           }
+        }
+      }
+    });
+  }
+
+  // ── LK DIST ──────────────────────────────────────────────────────────────────
+
+  let lkDistChartInst = null;
+  function renderLkDistChart(matches) {
+    if (lkDistChartInst) { lkDistChartInst.destroy(); lkDistChartInst = null; }
+
+    function parseRivalLk(m) {
+      if (!m.rivals_lk) return null;
+      // Para dobles: "5,4 / 6,2" → promedio de ambos
+      const parts = String(m.rivals_lk)
+        .split('/')
+        .map(s => parseFloat(s.trim().replace(',', '.')))
+        .filter(n => !isNaN(n) && n > 0);
+      return parts.length ? parts.reduce((a, b) => a + b, 0) / parts.length : null;
+    }
+
+    const buckets = new Map(); // lkInt → { won, lost }
+    matches.forEach(m => {
+      const lk = parseRivalLk(m);
+      if (lk == null) return;
+      const key = Math.floor(lk);
+      if (!buckets.has(key)) buckets.set(key, { won: 0, lost: 0 });
+      m.won ? buckets.get(key).won++ : buckets.get(key).lost++;
+    });
+
+    if (!buckets.size) return;
+
+    // Ordenar de mejor rival (LK bajo) a peor (LK alto)
+    const sorted = [...buckets.entries()].sort(([a], [b]) => a - b);
+    const labels = sorted.map(([k]) => `LK ${k}`);
+    const wins   = sorted.map(([, v]) => v.won);
+    const losses = sorted.map(([, v]) => v.lost);
+
+    // Ajustar altura al número de filas
+    const h = Math.max(180, sorted.length * 32);
+    el('lkDistChart').parentElement.style.height = h + 'px';
+
+    lkDistChartInst = new Chart(el('lkDistChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Ganados', data: wins,   backgroundColor: 'rgba(63,185,80,0.85)', borderRadius: 4, stack: 's' },
+          { label: 'Perdidos', data: losses, backgroundColor: 'rgba(248,81,73,0.85)', borderRadius: 4, stack: 's' },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#e6edf3', font: { size: 11 }, boxWidth: 12, padding: 14 } },
+          tooltip: {
+            mode: 'index',
+            callbacks: {
+              afterFooter: items => {
+                const i = items[0].dataIndex;
+                const total = wins[i] + losses[i];
+                return `Win rate: ${Math.round(wins[i] / total * 100)}%`;
+              }
+            },
+            backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
+            titleColor: '#e6edf3', bodyColor: '#e6edf3', footerColor: '#7d8590',
+          }
+        },
+        scales: {
+          x: { stacked: true, ticks: { color: '#7d8590', font: { size: 10 }, stepSize: 1 }, grid: { color: '#21262d' } },
+          y: { stacked: true, ticks: { color: '#7d8590', font: { size: 11 } }, grid: { color: '#21262d' } }
         }
       }
     });
