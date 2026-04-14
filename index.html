@@ -20,6 +20,7 @@
       --red-dim:   #3d1a1a;
       --blue:      #58a6ff;
       --yellow:    #d29922;
+      --purple:    #bc8cff;
     }
 
     body {
@@ -34,13 +35,13 @@
       padding: 28px 32px 22px;
       border-bottom: 1px solid var(--border);
     }
-    header .sub { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-    header h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+    header .sub     { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    header h1       { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
     header .updated { font-size: 0.72rem; color: var(--muted); margin-top: 8px; }
 
     /* ── MAIN ── */
     main {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 24px 24px 60px;
       display: flex;
@@ -48,33 +49,45 @@
       gap: 20px;
     }
 
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.09em; color: var(--muted);
+      margin-bottom: -8px;
+    }
+
     /* ── STATS GRID ── */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
+      gap: 10px;
     }
     .stat-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px 18px;
+      padding: 15px 16px;
     }
     .stat-card .lbl {
-      font-size: 0.67rem; font-weight: 600;
+      font-size: 0.65rem; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.07em;
-      color: var(--muted); margin-bottom: 8px;
+      color: var(--muted); margin-bottom: 7px;
     }
     .stat-card .val {
-      font-size: 1.9rem; font-weight: 800; line-height: 1;
+      font-size: 1.75rem; font-weight: 800; line-height: 1;
     }
     .stat-card .sub-val {
-      font-size: 0.75rem; color: var(--muted); margin-top: 5px;
+      font-size: 0.73rem; color: var(--muted); margin-top: 5px;
     }
     .val.green  { color: var(--green); }
     .val.red    { color: var(--red); }
     .val.blue   { color: var(--blue); }
     .val.yellow { color: var(--yellow); }
+    .val.purple { color: var(--purple); }
+
+    /* racha inline */
+    .streak-val { display: flex; align-items: baseline; gap: 6px; }
+    .streak-type { font-size: 0.78rem; font-weight: 600; color: var(--muted); }
 
     /* ── CHARTS ROW ── */
     .charts-row {
@@ -91,78 +104,11 @@
       padding: 18px 20px;
     }
     .card-title {
-      font-size: 0.67rem; font-weight: 700;
+      font-size: 0.65rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.07em;
       color: var(--muted); margin-bottom: 14px;
     }
     .chart-wrap { position: relative; height: 200px; }
-
-    /* ── FORM DOTS ── */
-    .form-dots { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-    .dot {
-      width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 800;
-    }
-    .dot.w { background: var(--green-dim); color: var(--green); }
-    .dot.l { background: var(--red-dim);   color: var(--red); }
-    .form-summary { font-size: 0.75rem; color: var(--muted); margin-top: 8px; }
-
-    /* ── RECORD SPLIT ── */
-    .split-row {
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .split-item .split-label {
-      font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;
-      display: flex; justify-content: space-between;
-    }
-    .split-bar-track {
-      background: var(--surface2); border-radius: 4px; height: 7px; overflow: hidden;
-    }
-    .split-bar-fill {
-      height: 100%; border-radius: 4px; background: var(--green);
-      transition: width 0.6s ease;
-    }
-    .split-record {
-      font-size: 0.8rem; font-weight: 700; color: var(--text);
-    }
-
-    /* ── TABLE ── */
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
-    th {
-      text-align: left; padding: 9px 14px;
-      font-size: 0.64rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      color: var(--muted); border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: var(--surface2); }
-
-    .badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 24px; height: 24px; border-radius: 50%;
-      font-size: 0.7rem; font-weight: 800;
-    }
-    .w-badge { background: var(--green-dim); color: var(--green); }
-    .l-badge { background: var(--red-dim);   color: var(--red); }
-
-    .delta { font-weight: 700; font-size: 0.82rem; }
-    .delta.pos  { color: var(--green); }
-    .delta.neg  { color: var(--red); }
-    .delta.zero { color: var(--muted); }
-
-    .rival-name  { font-weight: 600; }
-    .rival-lk    { font-size: 0.73rem; color: var(--muted); display: block; }
-    .partner-txt { font-size: 0.73rem; color: var(--muted); display: block; }
-    .ctx-cell    { font-size: 0.78rem; color: var(--muted); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* ── STREAK ── */
-    .streak-val { display: flex; align-items: baseline; gap: 6px; }
-    .streak-val .val { font-size: 2.4rem; }
-    .streak-type { font-size: 0.8rem; font-weight: 600; }
 
     /* ── ZOOM BTNS ── */
     .zoom-btn {
@@ -173,20 +119,74 @@
     .zoom-btn:hover  { border-color: var(--green); color: var(--green); }
     .zoom-btn.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
 
+    /* ── FORM DOTS ── */
+    .form-dots { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .dot {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem; font-weight: 800;
+    }
+    .dot.w { background: var(--green-dim); color: var(--green); }
+    .dot.l { background: var(--red-dim);   color: var(--red); }
+    .form-summary { font-size: 0.73rem; color: var(--muted); margin-top: 8px; }
+
+    /* ── SPLIT BARS ── */
+    .split-row { display: flex; flex-direction: column; gap: 10px; }
+    .split-item .split-label {
+      font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;
+      display: flex; justify-content: space-between;
+    }
+    .split-bar-track { background: var(--surface2); border-radius: 4px; height: 6px; overflow: hidden; }
+    .split-bar-fill  { height: 100%; border-radius: 4px; background: var(--green); }
+    .split-record    { font-size: 0.8rem; font-weight: 700; color: var(--text); }
+
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    th {
+      text-align: left; padding: 9px 14px;
+      font-size: 0.63rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface2); }
+
+    .badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%;
+      font-size: 0.68rem; font-weight: 800;
+    }
+    .w-badge { background: var(--green-dim); color: var(--green); }
+    .l-badge { background: var(--red-dim);   color: var(--red); }
+
+    .delta      { font-weight: 700; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+    .delta.pos  { color: var(--green); }
+    .delta.neg  { color: var(--red); }
+    .delta.zero { color: var(--muted); }
+
+    .rival-name  { font-weight: 600; }
+    .rival-lk    { font-size: 0.72rem; color: var(--muted); display: block; }
+    .partner-txt { font-size: 0.72rem; color: var(--muted); display: block; }
+    .ctx-cell    { font-size: 0.77rem; color: var(--muted); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* trend arrow */
+    .trend-up   { color: var(--green); }
+    .trend-down { color: var(--red); }
+    .trend-flat { color: var(--muted); }
+
     /* ── MSG ── */
     .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
 
-    @media (max-width: 1100px) {
-      .stats-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 1000px) {
-      .charts-row { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 640px) {
+    @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1000px) { .charts-row { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 680px)  {
       .charts-row { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       header { padding: 20px 16px 16px; }
-      main { padding: 14px 12px 48px; }
+      main   { padding: 14px 12px 48px; }
     }
   </style>
 </head>
@@ -200,21 +200,46 @@
 
 <main>
 
-  <!-- STAT CARDS -->
-  <div class="stats-grid" id="statsGrid">
+  <!-- ── GENERAL ── -->
+  <div class="section-label">General</div>
+  <div class="stats-grid">
     <div class="stat-card"><div class="lbl">LK Actual</div><div class="val blue" id="sLk">—</div></div>
     <div class="stat-card"><div class="lbl">Win Rate</div><div class="val" id="sRate">—</div><div class="sub-val" id="sRecord"></div></div>
     <div class="stat-card"><div class="lbl">ΔLK Total</div><div class="val" id="sDelta">—</div><div class="sub-val" id="sDeltaSub"></div></div>
     <div class="stat-card"><div class="lbl">ΔLK Promedio</div><div class="val" id="sAvgDelta">—</div><div class="sub-val">por partido</div></div>
-    <div class="stat-card"><div class="lbl">Racha Actual</div><div class="streak-val"><div class="val" id="sStreak">—</div><div class="streak-type" id="sStreakType"></div></div></div>
-    <div class="stat-card"><div class="lbl">Singles</div><div class="val" id="sSinglesRate">—</div><div class="sub-val" id="sSinglesRec"></div></div>
-    <div class="stat-card"><div class="lbl">Dobles</div><div class="val" id="sDoublesRate">—</div><div class="sub-val" id="sDoublesRec"></div></div>
-    <div class="stat-card"><div class="lbl">Tiebreaks</div><div class="val" id="sTbRate">—</div><div class="sub-val" id="sTbRec"></div></div>
-    <div class="stat-card"><div class="lbl">Match Tiebreaks</div><div class="val" id="sMtbRate">—</div><div class="sub-val" id="sMtbRec"></div></div>
-    <div class="stat-card"><div class="lbl">Mejor Rival</div><div class="val yellow" id="sBestWin" style="font-size:1.2rem;line-height:1.3"></div><div class="sub-val" id="sBestWinSub"></div></div>
+    <div class="stat-card"><div class="lbl">Racha Actual</div><div class="streak-val"><div class="val" id="sStreak">—</div><span class="streak-type" id="sStreakType"></span></div></div>
   </div>
 
-  <!-- CHARTS -->
+  <!-- ── POR TIPO / RIVAL ── -->
+  <div class="section-label">Desglose</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="lbl">Singles</div><div class="val" id="sSinglesRate">—</div><div class="sub-val" id="sSinglesRec"></div></div>
+    <div class="stat-card"><div class="lbl">Dobles</div><div class="val" id="sDoublesRate">—</div><div class="sub-val" id="sDoublesRec"></div></div>
+    <div class="stat-card"><div class="lbl">Upset Rate</div><div class="val" id="sUpsetRate">—</div><div class="sub-val" id="sUpsetRec"></div></div>
+    <div class="stat-card"><div class="lbl">vs Peores</div><div class="val" id="sVsWorseRate">—</div><div class="sub-val" id="sVsWorseRec"></div></div>
+    <div class="stat-card"><div class="lbl">Mejor Racha Histórica</div><div class="val green" id="sBestStreak">—</div><div class="sub-val">victorias seguidas</div></div>
+  </div>
+
+  <!-- ── SETS ── -->
+  <div class="section-label">Sets & Tiebreaks</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="lbl">Sets Ratio</div><div class="val" id="sSetsRatio">—</div><div class="sub-val" id="sSetsRec"></div></div>
+    <div class="stat-card"><div class="lbl">Sets Directos</div><div class="val" id="sStraight">—</div><div class="sub-val" id="sStraightRec"></div></div>
+    <div class="stat-card"><div class="lbl">3er Set</div><div class="val" id="s3rdRate">—</div><div class="sub-val" id="s3rdRec"></div></div>
+    <div class="stat-card"><div class="lbl">Tiebreaks</div><div class="val" id="sTbRate">—</div><div class="sub-val" id="sTbRec"></div></div>
+    <div class="stat-card"><div class="lbl">Match Tiebreaks</div><div class="val" id="sMtbRate">—</div><div class="sub-val" id="sMtbRec"></div></div>
+  </div>
+
+  <!-- ── EXTRA ── -->
+  <div class="section-label">Extras</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="lbl">Bagels Ganados</div><div class="val yellow" id="sBagelsW">—</div><div class="sub-val" id="sBagelsSub"></div></div>
+    <div class="stat-card"><div class="lbl">Mejor Rival Ganado</div><div class="val yellow" id="sBestWin" style="font-size:1.1rem;line-height:1.4"></div><div class="sub-val" id="sBestWinSub"></div></div>
+    <div class="stat-card"><div class="lbl">Últimos 30 días</div><div class="val blue" id="sLast30">—</div><div class="sub-val" id="sLast30Rec"></div></div>
+    <div class="stat-card"><div class="lbl">Tendencia</div><div class="val" id="sTrend">—</div><div class="sub-val" id="sTrendSub"></div></div>
+  </div>
+
+  <!-- ── CHARTS ── -->
   <div class="charts-row">
     <div class="card">
       <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
@@ -228,7 +253,7 @@
       <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title">Últimas 10 · forma</div>
+      <div class="card-title">Últimas 10 · Forma</div>
       <div id="formDots" class="form-dots msg">…</div>
       <div id="formSummary" class="form-summary"></div>
       <div style="margin-top:18px">
@@ -238,7 +263,15 @@
     </div>
   </div>
 
-  <!-- TABLE -->
+  <!-- ── HEAD TO HEAD ── -->
+  <div class="card">
+    <div class="card-title">Head to Head — Rivales frecuentes (singles)</div>
+    <div class="table-wrap">
+      <div id="h2hWrap" class="msg">Cargando…</div>
+    </div>
+  </div>
+
+  <!-- ── HISTORIAL ── -->
   <div class="card">
     <div class="card-title">Historial de Partidos</div>
     <div class="table-wrap">
@@ -253,10 +286,10 @@
 <script>
   const PLAYER_ID = 'NU3106825';
 
-  // Máximo 3 decimales en tennis.de — padding fijo para alinear columna
-  function fmt(v) {
-    return v.toFixed(3).replace('.', ',');
-  }
+  // ── HELPERS ──────────────────────────────────────────────────────────────────
+
+  // Padding fijo a 3 decimales (máximo en tennis.de)
+  function fmt(v) { return v.toFixed(3).replace('.', ','); }
 
   // Parsea "6:3 / 7:6 / 10:5" → [[6,3],[7,6],[10,5]]
   function parseSets(scoreStr) {
@@ -268,7 +301,14 @@
     }).filter(Boolean);
   }
 
+  // Porcentaje como string o '—'
+  function pct(num, den) {
+    if (!den) return '—';
+    return Math.round(num / den * 100) + '%';
+  }
+
   // ── INIT ─────────────────────────────────────────────────────────────────────
+
   async function init() {
     const res = await fetch('./data.json');
     if (!res.ok) throw new Error(`No se pudo cargar data.json (${res.status})`);
@@ -286,30 +326,32 @@
         hour: '2-digit', minute: '2-digit'
       });
 
-    renderStats(matches, player.lk);
-    renderLkChart(matches, parseFloat(String(player.lk).replace(',', '.')));
+    const currentLk = parseFloat(String(player.lk).replace(',', '.'));
+
+    renderStats(matches, player.lk, currentLk);
+    renderLkChart(matches, currentLk);
     renderPieChart(matches);
     renderForm(matches);
     renderSplit(matches);
+    renderH2H(matches);
     renderTable(matches);
   }
 
   // ── STATS ────────────────────────────────────────────────────────────────────
-  function renderStats(matches, lkRaw) {
-    const total   = matches.length;
-    const wins    = matches.filter(m => m.won).length;
-    const losses  = total - wins;
-    const rate    = total ? Math.round(wins / total * 100) : 0;
 
-    const singles = matches.filter(m => !m.is_doubles);
-    const doubles = matches.filter(m =>  m.is_doubles);
-    const sWins   = singles.filter(m => m.won).length;
-    const dWins   = doubles.filter(m => m.won).length;
-    const sRate   = singles.length ? Math.round(sWins / singles.length * 100) : null;
-    const dRate   = doubles.length ? Math.round(dWins / doubles.length * 100) : null;
+  function renderStats(matches, lkRaw, currentLk) {
+    const total  = matches.length;
+    const wins   = matches.filter(m => m.won).length;
+    const losses = total - wins;
 
-    // Delta total
-    const deltas  = matches.map(m => m.lk_change).filter(d => d != null);
+    // Singles / Dobles
+    const singles  = matches.filter(m => !m.is_doubles);
+    const doubles  = matches.filter(m =>  m.is_doubles);
+    const sWins    = singles.filter(m => m.won).length;
+    const dWins    = doubles.filter(m => m.won).length;
+
+    // ΔLK
+    const deltas   = matches.map(m => m.lk_change).filter(d => d != null);
     const deltaSum = deltas.reduce((a, b) => a + b, 0);
     const deltaAvg = deltas.length ? deltaSum / deltas.length : null;
 
@@ -318,117 +360,198 @@
     if (total) {
       const first = matches[0].won;
       streakType = first ? 'victorias' : 'derrotas';
-      for (const m of matches) {
-        if (m.won === first) streak++;
-        else break;
-      }
+      for (const m of matches) { if (m.won === first) streak++; else break; }
     }
 
-    // Mejor rival ganado (menor LK rival)
-    const wonMatches = matches.filter(m => m.won && m.rivals_lk);
-    let bestWinName = '—', bestWinLk = '';
-    if (wonMatches.length) {
-      const best = wonMatches.reduce((acc, m) => {
-        const lk = parseFloat(String(m.rivals_lk).split('/')[0].trim().replace(',', '.'));
-        return lk < acc.lk ? { m, lk } : acc;
-      }, { m: null, lk: Infinity });
-      if (best.m) {
-        bestWinName = best.m.rivals.split('/')[0].trim();
-        bestWinLk   = `LK ${best.m.rivals_lk}`;
-      }
-    }
+    // Mejor racha histórica
+    let bestStreak = 0, curS = 0;
+    [...matches].reverse().forEach(m => {
+      curS = m.won ? curS + 1 : 0;
+      bestStreak = Math.max(bestStreak, curS);
+    });
 
-    // LK actual formateado
-    const lk = typeof lkRaw === 'number'
-      ? lkRaw.toFixed(1).replace('.', ',')
-      : String(lkRaw ?? '—');
+    // Upset rate: victorias vs rivales con MEJOR LK (número más bajo)
+    const vsBetter = matches.filter(m => {
+      if (!m.rivals_lk || !m.player_lk) return false;
+      const rLk = parseFloat(String(m.rivals_lk).split('/')[0].replace(',', '.'));
+      return rLk < m.player_lk;
+    });
+    const vsWorse = matches.filter(m => {
+      if (!m.rivals_lk || !m.player_lk) return false;
+      const rLk = parseFloat(String(m.rivals_lk).split('/')[0].replace(',', '.'));
+      return rLk > m.player_lk;
+    });
+    const vsBetterWins = vsBetter.filter(m => m.won).length;
+    const vsWorseWins  = vsWorse.filter(m => m.won).length;
 
-    document.getElementById('sLk').textContent        = lk;
-    document.getElementById('sRate').textContent      = rate + '%';
-    document.getElementById('sRate').className        = `val ${rate >= 50 ? 'green' : 'red'}`;
-    document.getElementById('sRecord').textContent    = `${wins}G – ${losses}P de ${total}`;
+    // Sets ratio, straight sets, 3er set
+    let setsW = 0, setsL = 0;
+    matches.forEach(m => {
+      parseSets(m.score).forEach(([a, b]) => {
+        if (a > b) setsW++; else if (b > a) setsL++;
+      });
+    });
+
+    const straightWins = matches.filter(m => m.won && parseSets(m.score).length === 2).length;
+
+    const thirdSet      = matches.filter(m => parseSets(m.score).length === 3);
+    const thirdSetWins  = thirdSet.filter(m => m.won).length;
 
     // Tiebreaks
     let tbPlayed = 0, tbWon = 0, mtbPlayed = 0, mtbWon = 0;
     matches.forEach(m => {
-      parseSets(m.score).forEach(([a, b], i, arr) => {
-        const isLast = i === arr.length - 1;
-        if (a >= 10 || b >= 10) {               // match tiebreak (3er set super-tb)
-          if (isLast && arr.length === 3) { mtbPlayed++; if (a > b) mtbWon++; }
+      const sets = parseSets(m.score);
+      sets.forEach(([a, b], i) => {
+        if (a >= 10 || b >= 10) {
+          if (i === sets.length - 1 && sets.length === 3) { mtbPlayed++; if (a > b) mtbWon++; }
         } else if ((a === 7 && b === 6) || (a === 6 && b === 7)) {
-          tbPlayed++; if (a === 7) tbWon++;       // asume score del jugador primero
+          tbPlayed++; if (a === 7) tbWon++;
         }
       });
     });
 
-    const dSign = deltaSum > 0 ? '+' : '';
-    document.getElementById('sDelta').textContent     = deltas.length
-      ? dSign + fmt(deltaSum)
-      : '—';
-    document.getElementById('sDelta').className       = `val ${deltaSum > 0 ? 'green' : deltaSum < 0 ? 'red' : ''}`;
-    document.getElementById('sDeltaSub').textContent  = `en ${deltas.length} partidos con dato`;
+    // Bagels (6:0 sets)
+    let bagelsW = 0, bagelsL = 0;
+    matches.forEach(m => {
+      parseSets(m.score).forEach(([a, b]) => {
+        if (a === 6 && b === 0) bagelsW++;
+        if (a === 0 && b === 6) bagelsL++;
+      });
+    });
 
-    document.getElementById('sStreak').textContent    = streak || '—';
-    document.getElementById('sStreak').className      = `val ${streak > 0 && streakType === 'victorias' ? 'green' : streak > 0 ? 'red' : ''}`;
-    document.getElementById('sStreakType').textContent = streak ? streakType : '';
+    // Mejor rival ganado (LK más bajo)
+    const wonM = matches.filter(m => m.won && m.rivals_lk);
+    let bestWinName = '—', bestWinLk = '';
+    if (wonM.length) {
+      const best = wonM.reduce((acc, m) => {
+        const lk = parseFloat(String(m.rivals_lk).split('/')[0].replace(',', '.'));
+        return lk < acc.lk ? { m, lk } : acc;
+      }, { m: null, lk: Infinity });
+      if (best.m) { bestWinName = best.m.rivals.split('/')[0].trim(); bestWinLk = `LK ${best.m.rivals_lk}`; }
+    }
 
-    document.getElementById('sSinglesRate').textContent = sRate != null ? sRate + '%' : '—';
-    document.getElementById('sSinglesRate').className   = `val ${sRate >= 50 ? 'green' : 'red'}`;
-    document.getElementById('sSinglesRec').textContent  = singles.length ? `${sWins}G – ${singles.length - sWins}P` : 'Sin datos';
+    // Últimos 30 días
+    const cut30 = new Date(); cut30.setDate(cut30.getDate() - 30);
+    const last30  = matches.filter(m => m.match_date && new Date(m.match_date) >= cut30);
+    const last30W = last30.filter(m => m.won).length;
 
-    document.getElementById('sDoublesRate').textContent = dRate != null ? dRate + '%' : '—';
-    document.getElementById('sDoublesRate').className   = `val ${dRate >= 50 ? 'green' : 'red'}`;
-    document.getElementById('sDoublesRec').textContent  = doubles.length ? `${dWins}G – ${doubles.length - dWins}P` : 'Sin datos';
+    // Tendencia: últimas 10 vs anteriores 10
+    const l10 = matches.slice(0, 10);
+    const p10 = matches.slice(10, 20);
+    const l10r = l10.length ? l10.filter(m => m.won).length / l10.length * 100 : null;
+    const p10r = p10.length ? p10.filter(m => m.won).length / p10.length * 100 : null;
+    const trend = (l10r != null && p10r != null) ? Math.round(l10r - p10r) : null;
 
-    const tbPct  = tbPlayed  ? Math.round(tbWon  / tbPlayed  * 100) : null;
-    const mtbPct = mtbPlayed ? Math.round(mtbWon / mtbPlayed * 100) : null;
-    document.getElementById('sTbRate').textContent  = tbPct  != null ? tbPct  + '%' : '—';
-    document.getElementById('sTbRate').className    = `val ${tbPct  >= 50 ? 'green' : tbPct != null ? 'red' : ''}`;
-    document.getElementById('sTbRec').textContent   = tbPlayed  ? `${tbWon}/${tbPlayed} jugados` : 'Sin datos';
-    document.getElementById('sMtbRate').textContent = mtbPct != null ? mtbPct + '%' : '—';
-    document.getElementById('sMtbRate').className   = `val ${mtbPct >= 50 ? 'green' : mtbPct != null ? 'red' : ''}`;
-    document.getElementById('sMtbRec').textContent  = mtbPlayed ? `${mtbWon}/${mtbPlayed} jugados` : 'Sin datos';
+    // ── Pintar ──────────────────────────────────────────────────────────────
 
-    document.getElementById('sBestWin').textContent    = bestWinName;
-    document.getElementById('sBestWinSub').textContent = bestWinLk;
+    const lkStr = typeof currentLk === 'number'
+      ? currentLk.toFixed(1).replace('.', ',') : String(lkRaw ?? '—');
 
-    document.getElementById('sAvgDelta').textContent   = deltaAvg != null
-      ? (deltaAvg > 0 ? '+' : '') + fmt(deltaAvg)
-      : '—';
-    document.getElementById('sAvgDelta').className = `val ${deltaAvg > 0 ? 'green' : deltaAvg < 0 ? 'red' : ''}`;
+    set('sLk', lkStr);
+
+    setVal('sRate', pct(wins, total), rate(wins, total));
+    set('sRecord', `${wins}G – ${losses}P de ${total}`);
+
+    const dSign = deltaSum >= 0 ? '+' : '';
+    setVal('sDelta', deltas.length ? dSign + fmt(deltaSum) : '—',
+           deltaSum > 0 ? 'green' : deltaSum < 0 ? 'red' : '');
+    set('sDeltaSub', `en ${deltas.length} partidos con dato`);
+
+    setVal('sAvgDelta', deltaAvg != null ? (deltaAvg >= 0 ? '+' : '') + fmt(deltaAvg) : '—',
+           deltaAvg > 0 ? 'green' : deltaAvg < 0 ? 'red' : '');
+
+    el('sStreak').textContent = streak || '—';
+    el('sStreak').className   = `val ${streak > 0 && streakType === 'victorias' ? 'green' : streak > 0 ? 'red' : ''}`;
+    el('sStreakType').textContent = streak ? streakType : '';
+
+    setVal('sSinglesRate', pct(sWins, singles.length), rate(sWins, singles.length));
+    set('sSinglesRec', singles.length ? `${sWins}G – ${singles.length - sWins}P` : 'Sin datos');
+    setVal('sDoublesRate', pct(dWins, doubles.length), rate(dWins, doubles.length));
+    set('sDoublesRec', doubles.length ? `${dWins}G – ${doubles.length - dWins}P` : 'Sin datos');
+
+    setVal('sUpsetRate', pct(vsBetterWins, vsBetter.length), rate(vsBetterWins, vsBetter.length));
+    set('sUpsetRec', vsBetter.length ? `${vsBetterWins}G – ${vsBetter.length - vsBetterWins}P vs mejores` : 'Sin datos');
+    setVal('sVsWorseRate', pct(vsWorseWins, vsWorse.length), rate(vsWorseWins, vsWorse.length));
+    set('sVsWorseRec', vsWorse.length ? `${vsWorseWins}G – ${vsWorse.length - vsWorseWins}P vs peores` : 'Sin datos');
+
+    setVal('sBestStreak', bestStreak || '—', bestStreak ? 'green' : '');
+
+    const sRatio = (setsL > 0) ? (setsW / setsL).toFixed(2).replace('.', ',') : setsW > 0 ? '∞' : '—';
+    setVal('sSetsRatio', sRatio, setsW >= setsL ? 'green' : 'red');
+    set('sSetsRec', `${setsW} ganados / ${setsL} perdidos`);
+
+    setVal('sStraight', pct(straightWins, wins), rate(straightWins, wins));
+    set('sStraightRec', wins ? `${straightWins}/${wins} victorias sin ceder set` : 'Sin datos');
+
+    setVal('s3rdRate', pct(thirdSetWins, thirdSet.length), rate(thirdSetWins, thirdSet.length));
+    set('s3rdRec', thirdSet.length ? `${thirdSetWins}G – ${thirdSet.length - thirdSetWins}P en 3 sets` : 'Sin datos');
+
+    setVal('sTbRate', pct(tbWon, tbPlayed), rate(tbWon, tbPlayed));
+    set('sTbRec', tbPlayed ? `${tbWon}/${tbPlayed} jugados` : 'Sin datos');
+    setVal('sMtbRate', pct(mtbWon, mtbPlayed), rate(mtbWon, mtbPlayed));
+    set('sMtbRec', mtbPlayed ? `${mtbWon}/${mtbPlayed} jugados` : 'Sin datos');
+
+    setVal('sBagelsW', bagelsW || '0', bagelsW > 0 ? 'yellow' : '');
+    set('sBagelsSub', `${bagelsL} recibidos`);
+
+    el('sBestWin').textContent    = bestWinName;
+    set('sBestWinSub', bestWinLk);
+
+    setVal('sLast30', last30.length, 'blue');
+    set('sLast30Rec', last30.length ? `${last30W}G – ${last30.length - last30W}P` : 'Sin partidos');
+
+    if (trend !== null) {
+      const sign = trend > 0 ? '+' : '';
+      setVal('sTrend', sign + trend + '%', trend > 0 ? 'green' : trend < 0 ? 'red' : '');
+      set('sTrendSub', `vs las 10 anteriores (${Math.round(l10r)}% vs ${Math.round(p10r)}%)`);
+    } else {
+      set('sTrend', '—'); set('sTrendSub', 'Pocas muestras');
+    }
+  }
+
+  // DOM helpers
+  function el(id)            { return document.getElementById(id); }
+  function set(id, txt)      { el(id).textContent = txt; }
+  function setVal(id, txt, cls) {
+    el(id).textContent = txt;
+    el(id).className   = 'val' + (cls ? ' ' + cls : '');
+  }
+  function rate(w, total) {
+    if (!total) return '';
+    return Math.round(w / total * 100) >= 50 ? 'green' : 'red';
   }
 
   // ── LK CHART ─────────────────────────────────────────────────────────────────
-  let lkChartInstance = null;
-  const ZOOM_RANGES = [
-    { label: '1M', months: 1 },
-    { label: '6M', months: 6 },
+
+  let lkChartInst = null;
+  const ZOOMS = [
+    { label: '1M', months: 1  },
+    { label: '6M', months: 6  },
     { label: '1A', months: 12 },
     { label: '5A', months: 60 },
     { label: 'Todo', months: null },
   ];
-  let allLkPoints = [];
-  let activeZoom = null;  // null = Todo
+  let allLkPts = [];
+  let activeZoom = null;
 
   function renderLkChart(matches, currentLk) {
-    allLkPoints = [...matches]
+    // Un punto por día — si hay 2 partidos el mismo día queda el LK del último
+    const byDate = new Map();
+    [...matches]
       .filter(m => m.player_lk != null && m.match_date)
-      .reverse()
-      .map(m => ({ x: new Date(m.match_date), y: m.player_lk }));
+      .reverse()                          // oldest first
+      .forEach(m => byDate.set(m.match_date, m.player_lk));   // last wins
+    allLkPts = [...byDate.entries()].map(([d, lk]) => ({ x: new Date(d), y: lk }));
 
-    if (currentLk && allLkPoints.length) {
-      const last = allLkPoints.at(-1);
-      if (last.y !== currentLk) {
-        allLkPoints.push({ x: new Date(), y: currentLk });
-      }
+    if (currentLk && allLkPts.length && allLkPts.at(-1).y !== currentLk) {
+      allLkPts.push({ x: new Date(), y: currentLk });
     }
 
-    // Botones de zoom
-    const btns = document.getElementById('zoomBtns');
+    const btns = el('zoomBtns');
     btns.innerHTML = '';
-    ZOOM_RANGES.forEach(z => {
+    ZOOMS.forEach(z => {
       const b = document.createElement('button');
-      b.className = 'zoom-btn' + (z.months === activeZoom ? ' active' : '');
+      b.className  = 'zoom-btn';
       b.textContent = z.label;
       b.onclick = () => { activeZoom = z.months; updateLkChart(); };
       btns.appendChild(b);
@@ -438,31 +561,23 @@
   }
 
   function buildLkChart() {
-    const ctx = document.getElementById('lkChart');
-    if (lkChartInstance) lkChartInstance.destroy();
-
-    lkChartInstance = new Chart(ctx, {
+    if (lkChartInst) lkChartInst.destroy();
+    lkChartInst = new Chart(el('lkChart'), {
       type: 'line',
-      data: {
-        datasets: [{
-          data: [],   // se llena en updateLkChart
-          borderColor: '#3fb950',
-          backgroundColor: 'rgba(63,185,80,0.07)',
-          pointRadius: 4, pointBackgroundColor: '#3fb950',
-          pointHoverRadius: 6, tension: 0.3, fill: true, borderWidth: 2,
-        }]
-      },
+      data: { datasets: [{
+        data: [],
+        borderColor: '#3fb950', backgroundColor: 'rgba(63,185,80,0.07)',
+        pointRadius: 4, pointBackgroundColor: '#3fb950',
+        pointHoverRadius: 6, tension: 0.3, fill: true, borderWidth: 2,
+      }]},
       options: {
-        responsive: true, maintainAspectRatio: false,
-        parsing: false,
+        responsive: true, maintainAspectRatio: false, parsing: false,
         plugins: {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              title: items => {
-                const d = new Date(items[0].parsed.x);
-                return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
-              },
+              title: items => new Date(items[0].parsed.x).toLocaleDateString('es-AR',
+                { day: 'numeric', month: 'short', year: 'numeric' }),
               label: c => ` LK ${c.parsed.y.toFixed(1).replace('.', ',')}`,
             },
             backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
@@ -472,7 +587,7 @@
         scales: {
           x: {
             type: 'time',
-            time: { unit: 'month', tooltipFormat: 'dd/MM/yyyy' },
+            time: { unit: 'month' },
             adapters: { date: {} },
             ticks: { font: { size: 10 }, color: '#7d8590', maxTicksLimit: 8 },
             grid: { color: '#21262d' }
@@ -485,60 +600,43 @@
         }
       }
     });
-
     updateLkChart();
   }
 
   function updateLkChart() {
-    // Filtrar puntos según zoom seleccionado
-    let points = allLkPoints;
+    let pts = allLkPts;
     if (activeZoom !== null) {
       const cutoff = new Date();
       cutoff.setMonth(cutoff.getMonth() - activeZoom);
-      points = allLkPoints.filter(p => p.x >= cutoff);
+      pts = allLkPts.filter(p => p.x >= cutoff);
     }
-
-    // Actualizar botones activos
-    document.querySelectorAll('.zoom-btn').forEach((b, i) => {
-      b.classList.toggle('active', ZOOM_RANGES[i].months === activeZoom);
-    });
-
-    // Unidad del eje X según rango
-    let unit = 'month';
-    if (activeZoom === 1)  unit = 'week';
-    if (activeZoom === 60 || activeZoom === null) unit = 'year';
-
-    lkChartInstance.data.datasets[0].data = points.map(p => ({ x: p.x.getTime(), y: p.y }));
-    lkChartInstance.options.scales.x.time.unit = unit;
-    lkChartInstance.update();
+    document.querySelectorAll('.zoom-btn').forEach((b, i) =>
+      b.classList.toggle('active', ZOOMS[i].months === activeZoom)
+    );
+    const unit = activeZoom === 1 ? 'week' : (activeZoom === 60 || activeZoom === null) ? 'year' : 'month';
+    lkChartInst.data.datasets[0].data = pts.map(p => ({ x: p.x.getTime(), y: p.y }));
+    lkChartInst.options.scales.x.time.unit = unit;
+    lkChartInst.update();
   }
 
   // ── PIE CHART ────────────────────────────────────────────────────────────────
+
   function renderPieChart(matches) {
     const wins   = matches.filter(m => m.won).length;
     const losses = matches.length - wins;
-    new Chart(document.getElementById('pieChart'), {
+    new Chart(el('pieChart'), {
       type: 'doughnut',
       data: {
         labels: ['Ganados', 'Perdidos'],
-        datasets: [{
-          data: [wins, losses],
-          backgroundColor: ['#3fb950', '#f85149'],
-          borderColor: ['#1a3d23', '#3d1a1a'],
-          borderWidth: 3, hoverOffset: 4,
-        }]
+        datasets: [{ data: [wins, losses], backgroundColor: ['#3fb950', '#f85149'],
+          borderColor: ['#1a3d23', '#3d1a1a'], borderWidth: 3, hoverOffset: 4 }]
       },
       options: {
         responsive: true, maintainAspectRatio: false, cutout: '65%',
         plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { font: { size: 12 }, padding: 14, boxWidth: 12, color: '#e6edf3' }
-          },
+          legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14, boxWidth: 12, color: '#e6edf3' } },
           tooltip: {
-            callbacks: {
-              label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw / matches.length * 100)}%)`
-            },
+            callbacks: { label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw / matches.length * 100)}%)` },
             backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
             titleColor: '#e6edf3', bodyColor: '#e6edf3',
           }
@@ -548,81 +646,122 @@
   }
 
   // ── FORM DOTS ────────────────────────────────────────────────────────────────
+
   function renderForm(matches) {
     const last10 = matches.slice(0, 10).reverse();
-    const container = document.getElementById('formDots');
-    if (!last10.length) { container.textContent = 'Sin datos'; return; }
-    container.innerHTML = '';
+    const c = el('formDots');
+    if (!last10.length) { c.textContent = 'Sin datos'; return; }
+    c.innerHTML = '';
     last10.forEach(m => {
       const d = document.createElement('div');
       d.className = `dot ${m.won ? 'w' : 'l'}`;
       d.title = `${m.match_date ?? ''} · ${m.rivals ?? ''}`;
       d.textContent = m.won ? 'G' : 'P';
-      container.appendChild(d);
+      c.appendChild(d);
     });
-    const w10 = last10.filter(m => m.won).length;
-    document.getElementById('formSummary').textContent =
-      `${w10} victorias en los últimos ${last10.length} partidos`;
+    const w = last10.filter(m => m.won).length;
+    el('formSummary').textContent = `${w} victorias en los últimos ${last10.length} partidos`;
   }
 
   // ── SPLIT BARS ───────────────────────────────────────────────────────────────
+
   function renderSplit(matches) {
-    const container = document.getElementById('splitBars');
     const groups = [
       { label: 'Singles', items: matches.filter(m => !m.is_doubles) },
       { label: 'Dobles',  items: matches.filter(m =>  m.is_doubles) },
     ];
-    container.innerHTML = '';
+    const c = el('splitBars'); c.innerHTML = '';
     groups.forEach(g => {
       if (!g.items.length) return;
       const w = g.items.filter(m => m.won).length;
-      const l = g.items.length - w;
-      const pct = Math.round(w / g.items.length * 100);
-      container.innerHTML += `
+      const p = Math.round(w / g.items.length * 100);
+      c.innerHTML += `
         <div class="split-item">
           <div class="split-label">
-            <span>${g.label} — <span class="split-record">${w}G ${l}P</span></span>
-            <span style="color:var(--green)">${pct}%</span>
+            <span>${g.label} — <span class="split-record">${w}G ${g.items.length - w}P</span></span>
+            <span style="color:var(--green)">${p}%</span>
           </div>
-          <div class="split-bar-track">
-            <div class="split-bar-fill" style="width:${pct}%"></div>
-          </div>
+          <div class="split-bar-track"><div class="split-bar-fill" style="width:${p}%"></div></div>
         </div>`;
     });
   }
 
-  // ── TABLE ─────────────────────────────────────────────────────────────────────
-  function renderTable(matches) {
-    if (!matches.length) {
-      document.getElementById('tableWrap').innerHTML = '<div class="msg">No hay partidos.</div>';
+  // ── HEAD TO HEAD ─────────────────────────────────────────────────────────────
+
+  function renderH2H(matches) {
+    const map = new Map();
+    matches.filter(m => !m.is_doubles && m.rivals).forEach(m => {
+      const key = m.rivals.trim();
+      if (!map.has(key)) map.set(key, { name: key, lk: m.rivals_lk, played: 0, won: 0 });
+      const r = map.get(key);
+      r.played++;
+      if (m.won) r.won++;
+      if (m.rivals_lk) r.lk = m.rivals_lk;  // actualizar con el más reciente
+    });
+
+    const rivals = [...map.values()].filter(r => r.played >= 2).sort((a, b) => b.played - a.played);
+
+    if (!rivals.length) {
+      el('h2hWrap').innerHTML = '<div class="msg">No hay rivales con 2+ partidos todavía.</div>';
       return;
     }
 
-    const rows = matches.map(m => {
-      const date   = m.match_date
-        ? m.match_date.slice(0, 10).split('-').reverse().join('.')
-        : '—';
+    const rows = rivals.map(r => {
+      const p   = Math.round(r.won / r.played * 100);
+      const cls = p >= 50 ? 'pos' : 'neg';
+      return `<tr>
+        <td><span class="rival-name">${r.name}</span></td>
+        <td><span class="rival-lk" style="font-size:0.84rem;color:var(--text)">${r.lk ? 'LK ' + r.lk : '—'}</span></td>
+        <td style="font-variant-numeric:tabular-nums">${r.played}</td>
+        <td style="font-variant-numeric:tabular-nums">${r.won}</td>
+        <td style="font-variant-numeric:tabular-nums">${r.played - r.won}</td>
+        <td><span class="delta ${cls}">${p}%</span></td>
+      </tr>`;
+    }).join('');
 
-      const res    = m.won
+    el('h2hWrap').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Rival</th><th>LK</th><th>Partidos</th><th>G</th><th>P</th><th>Win %</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  // ── HISTORIAL TABLE ───────────────────────────────────────────────────────────
+
+  function renderTable(matches) {
+    if (!matches.length) {
+      el('tableWrap').innerHTML = '<div class="msg">No hay partidos registrados.</div>';
+      return;
+    }
+
+    let lastDate = null;
+    const rows = matches.map(m => {
+      const isoDate = m.match_date ? m.match_date.slice(0, 10) : null;
+      const date    = isoDate && isoDate !== lastDate
+        ? isoDate.split('-').reverse().join('.')
+        : '';
+      if (isoDate) lastDate = isoDate;
+      const res   = m.won
         ? '<span class="badge w-badge">G</span>'
         : '<span class="badge l-badge">P</span>';
 
-      const rival    = m.rivals ?? '—';
-      const rivalLk  = m.rivals_lk
-        ? `<span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
-      const partner  = m.partner
-        ? `<span class="partner-txt">con ${m.partner}${m.partner_lk != null ? ` · LK ${m.partner_lk.toFixed(1).replace('.', ',')}` : ''}</span>`
-        : '';
-
-      const myLk   = m.player_lk != null ? m.player_lk.toFixed(1).replace('.', ',') : '—';
-      // Limpiar score — puede venir con "LK +0,3" pegado en datos viejos
+      // Limpiar score (datos viejos pueden tener "LK +0,3" pegado)
       const score = m.score
         ? m.score.replace(/LK\s*[+\-]?\s*\d+[,\.]\d+/gi, '').trim()
         : '—';
 
+      const rival   = m.rivals ?? '—';
+      const rivalLk = m.rivals_lk ? `<span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
+      const partner = m.partner
+        ? `<span class="partner-txt">con ${m.partner}${m.partner_lk != null ? ` · LK ${fmt(m.partner_lk)}` : ''}</span>`
+        : '';
+
+      const myLk = m.player_lk != null ? m.player_lk.toFixed(1).replace('.', ',') : '—';
+
       let dCls = 'zero', dTxt = '—';
       if (m.lk_change != null) {
-        // LK +0,3 en tennis.de significa que mejoraste → verde
         dCls = m.lk_change > 0 ? 'pos' : m.lk_change < 0 ? 'neg' : 'zero';
         dTxt = (m.lk_change > 0 ? '+' : '') + fmt(m.lk_change);
       }
@@ -641,24 +780,20 @@
       </tr>`;
     }).join('');
 
-    document.getElementById('tableWrap').innerHTML = `
+    el('tableWrap').innerHTML = `
       <table>
         <thead><tr>
-          <th>Fecha</th>
-          <th>Res.</th>
-          <th>Rival / Pareja</th>
-          <th>Score</th>
-          <th>Mi LK</th>
-          <th>Δ LK</th>
-          <th>Competición</th>
+          <th>Fecha</th><th>Res.</th><th>Rival / Pareja</th>
+          <th>Score</th><th>Mi LK</th><th>Δ LK</th><th>Competición</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
   }
 
+  // ── RUN ──────────────────────────────────────────────────────────────────────
+
   init().catch(err => {
-    document.getElementById('tableWrap').innerHTML =
-      `<div class="msg">Error: ${err.message}</div>`;
+    el('tableWrap').innerHTML = `<div class="msg">Error: ${err.message}</div>`;
     console.error(err);
   });
 </script>
