@@ -210,35 +210,6 @@
     <div class="stat-card"><div class="lbl">Racha Actual</div><div class="streak-val"><div class="val" id="sStreak">—</div><span class="streak-type" id="sStreakType"></span></div></div>
   </div>
 
-  <!-- ── POR TIPO / RIVAL ── -->
-  <div class="section-label">Desglose</div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="lbl">Singles</div><div class="val" id="sSinglesRate">—</div><div class="sub-val" id="sSinglesRec"></div></div>
-    <div class="stat-card"><div class="lbl">Dobles</div><div class="val" id="sDoublesRate">—</div><div class="sub-val" id="sDoublesRec"></div></div>
-    <div class="stat-card"><div class="lbl">Upset Rate</div><div class="val" id="sUpsetRate">—</div><div class="sub-val" id="sUpsetRec"></div></div>
-    <div class="stat-card"><div class="lbl">vs Peores</div><div class="val" id="sVsWorseRate">—</div><div class="sub-val" id="sVsWorseRec"></div></div>
-    <div class="stat-card"><div class="lbl">Mejor Racha Histórica</div><div class="val green" id="sBestStreak">—</div><div class="sub-val">victorias seguidas</div></div>
-  </div>
-
-  <!-- ── SETS ── -->
-  <div class="section-label">Sets & Tiebreaks</div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="lbl">Sets Ratio</div><div class="val" id="sSetsRatio">—</div><div class="sub-val" id="sSetsRec"></div></div>
-    <div class="stat-card"><div class="lbl">Sets Directos</div><div class="val" id="sStraight">—</div><div class="sub-val" id="sStraightRec"></div></div>
-    <div class="stat-card"><div class="lbl">3er Set</div><div class="val" id="s3rdRate">—</div><div class="sub-val" id="s3rdRec"></div></div>
-    <div class="stat-card"><div class="lbl">Tiebreaks</div><div class="val" id="sTbRate">—</div><div class="sub-val" id="sTbRec"></div></div>
-    <div class="stat-card"><div class="lbl">Match Tiebreaks</div><div class="val" id="sMtbRate">—</div><div class="sub-val" id="sMtbRec"></div></div>
-  </div>
-
-  <!-- ── EXTRA ── -->
-  <div class="section-label">Extras</div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="lbl">Bagels Ganados</div><div class="val yellow" id="sBagelsW">—</div><div class="sub-val" id="sBagelsSub"></div></div>
-    <div class="stat-card"><div class="lbl">Mejor Rival Ganado</div><div class="val yellow" id="sBestWin" style="font-size:1.1rem;line-height:1.4"></div><div class="sub-val" id="sBestWinSub"></div></div>
-    <div class="stat-card"><div class="lbl">Últimos 30 días</div><div class="val blue" id="sLast30">—</div><div class="sub-val" id="sLast30Rec"></div></div>
-    <div class="stat-card"><div class="lbl">Tendencia</div><div class="val" id="sTrend">—</div><div class="sub-val" id="sTrendSub"></div></div>
-  </div>
-
   <!-- ── CHARTS ── -->
   <div class="charts-row">
     <div class="card">
@@ -263,12 +234,34 @@
     </div>
   </div>
 
-  <!-- ── HEAD TO HEAD ── -->
-  <div class="card">
-    <div class="card-title">Head to Head — Rivales frecuentes (singles)</div>
-    <div class="table-wrap">
-      <div id="h2hWrap" class="msg">Cargando…</div>
-    </div>
+  <!-- ── POR TIPO / RIVAL ── -->
+  <div class="section-label">Desglose</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="lbl">Singles</div><div class="val" id="sSinglesRate">—</div><div class="sub-val" id="sSinglesRec"></div></div>
+    <div class="stat-card"><div class="lbl">Dobles</div><div class="val" id="sDoublesRate">—</div><div class="sub-val" id="sDoublesRec"></div></div>
+    <div class="stat-card"><div class="lbl">Upset Rate</div><div class="val" id="sUpsetRate">—</div><div class="sub-val" id="sUpsetRec"></div></div>
+    <div class="stat-card"><div class="lbl">vs Peores</div><div class="val" id="sVsWorseRate">—</div><div class="sub-val" id="sVsWorseRec"></div></div>
+    <div class="stat-card"><div class="lbl">Mejor Racha Histórica</div><div class="val green" id="sBestStreak">—</div><div class="sub-val">victorias seguidas</div></div>
+  </div>
+
+  <!-- ── SETS ── -->
+  <div class="section-label">Sets & Tiebreaks</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="lbl">Sets Ratio</div><div class="val" id="sSetsRatio">—</div><div class="sub-val" id="sSetsRec"></div></div>
+    <div class="stat-card"><div class="lbl">Sets Directos</div><div class="val" id="sStraight">—</div><div class="sub-val" id="sStraightRec"></div></div>
+    <div class="stat-card"><div class="lbl">Tiebreaks</div><div class="val" id="sTbRate">—</div><div class="sub-val" id="sTbRec"></div></div>
+    <div class="stat-card"><div class="lbl">Match Tiebreaks</div><div class="val" id="sMtbRate">—</div><div class="sub-val" id="sMtbRec"></div></div>
+    <div class="stat-card"><div class="lbl">Ganando 1er Set</div><div class="val" id="sWonFirst">—</div><div class="sub-val" id="sWonFirstRec"></div></div>
+    <div class="stat-card"><div class="lbl">Perdiendo 1er Set</div><div class="val" id="sLostFirst">—</div><div class="sub-val" id="sLostFirstRec"></div></div>
+  </div>
+
+  <!-- ── EXTRA ── -->
+  <div class="section-label">Extras</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="lbl">Bagels Ganados</div><div class="val yellow" id="sBagelsW">—</div><div class="sub-val" id="sBagelsSub"></div></div>
+    <div class="stat-card"><div class="lbl">Mejor Rival Ganado</div><div class="val yellow" id="sBestWin" style="font-size:1.1rem;line-height:1.4"></div><div class="sub-val" id="sBestWinSub"></div></div>
+    <div class="stat-card"><div class="lbl">Últimos 30 días</div><div class="val blue" id="sLast30">—</div><div class="sub-val" id="sLast30Rec"></div></div>
+    <div class="stat-card"><div class="lbl">Tendencia</div><div class="val" id="sTrend">—</div><div class="sub-val" id="sTrendSub"></div></div>
   </div>
 
   <!-- ── HISTORIAL ── -->
@@ -276,6 +269,14 @@
     <div class="card-title">Historial de Partidos</div>
     <div class="table-wrap">
       <div id="tableWrap" class="msg">Cargando…</div>
+    </div>
+  </div>
+
+  <!-- ── HEAD TO HEAD ── -->
+  <div class="card">
+    <div class="card-title">Head to Head — Rivales frecuentes (singles)</div>
+    <div class="table-wrap">
+      <div id="h2hWrap" class="msg">Cargando…</div>
     </div>
   </div>
 
@@ -394,8 +395,15 @@
 
     const straightWins = matches.filter(m => m.won && parseSets(m.score).length === 2).length;
 
-    const thirdSet      = matches.filter(m => parseSets(m.score).length === 3);
-    const thirdSetWins  = thirdSet.filter(m => m.won).length;
+    // 1er set
+    let wonFirst = 0, wonFirstMatch = 0, lostFirst = 0, lostFirstMatch = 0;
+    matches.forEach(m => {
+      const sets = parseSets(m.score);
+      if (!sets.length) return;
+      const [a, b] = sets[0];
+      if (a > b) { wonFirst++;  if (m.won) wonFirstMatch++;  }
+      else if (b > a) { lostFirst++; if (m.won) lostFirstMatch++; }
+    });
 
     // Tiebreaks
     let tbPlayed = 0, tbWon = 0, mtbPlayed = 0, mtbWon = 0;
@@ -483,8 +491,10 @@
     setVal('sStraight', pct(straightWins, wins), rate(straightWins, wins));
     set('sStraightRec', wins ? `${straightWins}/${wins} victorias sin ceder set` : 'Sin datos');
 
-    setVal('s3rdRate', pct(thirdSetWins, thirdSet.length), rate(thirdSetWins, thirdSet.length));
-    set('s3rdRec', thirdSet.length ? `${thirdSetWins}G – ${thirdSet.length - thirdSetWins}P en 3 sets` : 'Sin datos');
+    setVal('sWonFirst', pct(wonFirstMatch, wonFirst), rate(wonFirstMatch, wonFirst));
+    set('sWonFirstRec', wonFirst ? `${wonFirstMatch}G – ${wonFirst - wonFirstMatch}P de ${wonFirst}` : 'Sin datos');
+    setVal('sLostFirst', pct(lostFirstMatch, lostFirst), rate(lostFirstMatch, lostFirst));
+    set('sLostFirstRec', lostFirst ? `${lostFirstMatch}G – ${lostFirst - lostFirstMatch}P de ${lostFirst}` : 'Sin datos');
 
     setVal('sTbRate', pct(tbWon, tbPlayed), rate(tbWon, tbPlayed));
     set('sTbRec', tbPlayed ? `${tbWon}/${tbPlayed} jugados` : 'Sin datos');
