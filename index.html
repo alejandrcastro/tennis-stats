@@ -205,6 +205,44 @@
     .surf-btn.hard   { background: rgba(88,166,255,0.10); border-color: var(--blue); color: var(--blue); }
     .surf-btn.grass  { background: rgba(74,222,128,0.10); border-color: #4ade80;  color: #4ade80; }
 
+    /* ── TABLE FILTER ── */
+    .table-filter {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 10px 0 14px; border-bottom: 1px solid var(--border); margin-bottom: 2px;
+    }
+    .filter-input {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      border-radius: 6px; padding: 5px 10px; font-size: 0.8rem; width: 170px; outline: none;
+    }
+    .filter-input::placeholder { color: var(--muted); }
+    .filter-input:focus { border-color: var(--blue); }
+    .filter-group { display: flex; gap: 4px; }
+    .filter-chip {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; padding: 3px 10px; font-size: 0.72rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .filter-chip:hover  { border-color: var(--blue); color: var(--blue); }
+    .filter-chip.active { background: rgba(88,166,255,0.1); border-color: var(--blue); color: var(--blue); }
+    .table-count { margin-left: auto; font-size: 0.72rem; color: var(--muted); }
+
+    /* ── TABS ── */
+    .tab-bar {
+      display: flex; gap: 2px;
+      padding: 0 32px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: var(--muted); padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover  { color: var(--text); }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: contents; }
+
     /* ── MSG ── */
     .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
 
@@ -227,7 +265,12 @@
   <div class="updated" id="updatedAt"></div>
 </header>
 
-<div class="filter-bar">
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="stats">Stats</button>
+  <button class="tab-btn" data-tab="h2h">Head to Head</button>
+</div>
+
+<div class="filter-bar" id="periodBar">
   <span class="lbl">Período</span>
   <button class="period-btn" data-months="1">1M</button>
   <button class="period-btn" data-months="3">3M</button>
@@ -239,6 +282,8 @@
 </div>
 
 <main>
+
+<div class="tab-panel active" id="panelStats">
 
   <!-- ── GENERAL ── -->
   <div class="section-label">General</div>
@@ -361,11 +406,35 @@
 
   <!-- ── HISTORIAL ── -->
   <div class="card">
-    <div class="card-title">Historial de Partidos</div>
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+      <span>Historial de Partidos</span>
+      <button id="csvBtn" class="zoom-btn">↓ CSV</button>
+    </div>
+    <div class="table-filter">
+      <input id="filterText"    type="text" class="filter-input" placeholder="Buscar rival…">
+      <input id="filterPartner" type="text" class="filter-input" placeholder="Buscar pareja…">
+      <div class="filter-group" id="typeChips">
+        <button class="filter-chip active" data-type="all">Todos</button>
+        <button class="filter-chip" data-type="singles">Singles</button>
+        <button class="filter-chip" data-type="doubles">Dobles</button>
+      </div>
+      <div class="filter-group" id="surfChips">
+        <button class="filter-chip active" data-surf="all">Todas</button>
+        <button class="filter-chip" data-surf="clay">Polvo</button>
+        <button class="filter-chip" data-surf="carpet">Carpeta</button>
+        <button class="filter-chip" data-surf="hard">Hardcourt</button>
+        <button class="filter-chip" data-surf="grass">Grass</button>
+      </div>
+      <span class="table-count" id="tableCount"></span>
+    </div>
     <div class="table-wrap">
       <div id="tableWrap" class="msg">Cargando…</div>
     </div>
   </div>
+
+</div><!-- /panelStats -->
+
+<div class="tab-panel" id="panelH2h">
 
   <!-- ── HEAD TO HEAD ── -->
   <div class="card">
@@ -374,6 +443,8 @@
       <div id="h2hWrap" class="msg">Cargando…</div>
     </div>
   </div>
+
+</div><!-- /panelH2h -->
 
 </main>
 
@@ -426,6 +497,52 @@
     const cutoff = new Date();
     cutoff.setMonth(cutoff.getMonth() - _activePeriod);
     return _allMatches.filter(m => m.match_date && new Date(m.match_date) >= cutoff);
+  }
+
+  // ── TABLE FILTER ─────────────────────────────────────────────────────────────
+
+  let _tableFilter = { text: '', partner: '', type: 'all', surf: 'all' };
+
+  function applyTableFilter(matches) {
+    return matches.filter(m => {
+      if (_tableFilter.text) {
+        const t = _tableFilter.text.toLowerCase();
+        if (!(m.rivals || '').toLowerCase().includes(t)) return false;
+      }
+      if (_tableFilter.partner) {
+        const p = _tableFilter.partner.toLowerCase();
+        if (!(m.partner || '').toLowerCase().includes(p)) return false;
+      }
+      if (_tableFilter.type === 'singles' &&  m.is_doubles) return false;
+      if (_tableFilter.type === 'doubles' && !m.is_doubles) return false;
+      if (_tableFilter.surf !== 'all' && getSurface(m) !== _tableFilter.surf) return false;
+      return true;
+    });
+  }
+
+  function exportCSV(matches) {
+    const rows = applyTableFilter(matches).map(m => {
+      const score = (m.score || '').replace(/LK.*/i, '').trim();
+      const delta = m.lk_change != null
+        ? (m.lk_change > 0 ? '+' : '') + m.lk_change.toFixed(3)
+        : '';
+      return [
+        m.match_date || '',
+        !completed(m) ? '?' : m.won ? 'G' : 'P',
+        m.rivals  || '',
+        m.partner || '',
+        score,
+        m.player_lk != null ? m.player_lk.toFixed(1) : '',
+        delta,
+        SURF_LABELS[getSurface(m)] || '',
+        m.context || '',
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+    });
+    const csv  = ['Fecha,Res.,Rival,Pareja,Score,Mi LK,ΔLK,Superficie,Competición', ...rows].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a'); a.href = url; a.download = 'partidos.csv'; a.click();
+    URL.revokeObjectURL(url);
   }
 
   function rerender() {
@@ -503,6 +620,52 @@
         rerender();
       });
     });
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        el('panel' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1)).classList.add('active');
+        // Ocultar filtro de período en H2H (no aplica)
+        el('periodBar').style.display = btn.dataset.tab === 'h2h' ? 'none' : '';
+      });
+    });
+
+    // Filtros de tabla
+    el('filterText').addEventListener('input', e => {
+      _tableFilter.text = e.target.value.trim();
+      renderTable(filteredMatches());
+    });
+    el('filterPartner').addEventListener('input', e => {
+      _tableFilter.partner = e.target.value.trim();
+      // Si escriben una pareja, auto-seleccionar "Dobles"
+      if (_tableFilter.partner) {
+        _tableFilter.type = 'doubles';
+        el('typeChips').querySelectorAll('.filter-chip').forEach(b => {
+          b.classList.toggle('active', b.dataset.type === 'doubles');
+        });
+      }
+      renderTable(filteredMatches());
+    });
+    el('typeChips').querySelectorAll('.filter-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        _tableFilter.type = btn.dataset.type;
+        el('typeChips').querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTable(filteredMatches());
+      });
+    });
+    el('surfChips').querySelectorAll('.filter-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        _tableFilter.surf = btn.dataset.surf;
+        el('surfChips').querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTable(filteredMatches());
+      });
+    });
+    el('csvBtn').addEventListener('click', () => exportCSV(filteredMatches()));
 
     renderLkChart(matches, _currentLk);   // el chart de LK siempre muestra todo + tiene su propio zoom
     rerender();
@@ -1116,13 +1279,20 @@
   // ── HISTORIAL TABLE ───────────────────────────────────────────────────────────
 
   function renderTable(matches) {
-    if (!matches.length) {
-      el('tableWrap').innerHTML = '<div class="msg">No hay partidos registrados.</div>';
+    const visible = applyTableFilter(matches);
+    const countEl = el('tableCount');
+    if (countEl) countEl.textContent = visible.length < matches.length
+      ? `${visible.length} de ${matches.length}`
+      : `${matches.length} partidos`;
+
+    if (!visible.length) {
+      el('tableWrap').innerHTML = '<div class="msg">Sin partidos con ese filtro.</div>';
       return;
     }
+    const matches2 = visible;  // alias para el resto de la función
 
     let lastDate = null;
-    const rows = matches.map(m => {
+    const rows = matches2.map(m => {
       const isoDate = m.match_date ? m.match_date.slice(0, 10) : null;
       const date    = isoDate && isoDate !== lastDate
         ? isoDate.split('-').reverse().join('.')
