@@ -161,6 +161,7 @@
     }
     .w-badge { background: var(--green-dim); color: var(--green); }
     .l-badge { background: var(--red-dim);   color: var(--red); }
+    .u-badge { background: var(--surface2);  color: var(--muted); }
 
     .delta      { font-weight: 700; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
     .delta.pos  { color: var(--green); }
@@ -289,12 +290,6 @@
       <div class="card-title">Verano vs Invierno</div>
       <div id="seasonSplit" class="split-row" style="margin-top:8px"></div>
     </div>
-  </div>
-
-  <!-- ── DISTRIBUCIÓN POR LK DE RIVAL ── -->
-  <div class="card">
-    <div class="card-title">Partidos por LK del rival <span style="font-weight:400;color:var(--muted)">(dobles: promedio de los dos)</span></div>
-    <div style="position:relative;height:240px"><canvas id="lkDistChart"></canvas></div>
   </div>
 
   <!-- ── POR TIPO / RIVAL ── -->
@@ -448,7 +443,6 @@
     renderMonthlyChart(matches);
     renderScoreDistChart(matches);
     renderSeasonSplit(matches);
-    renderLkDistChart(matches);
     renderH2H(matches);
     renderTable(matches);
   }
@@ -467,6 +461,9 @@
       return m ? [parseInt(m[1]), parseInt(m[2])] : null;
     }).filter(Boolean);
   }
+
+  // Partido con resultado conocido (excluye walkovers / sin score)
+  function completed(m) { return m.score != null && m.won != null; }
 
   // Porcentaje como string o '—'
   function pct(num, den) {
@@ -514,13 +511,14 @@
   // ── STATS ────────────────────────────────────────────────────────────────────
 
   function renderStats(matches, lkRaw, currentLk) {
-    const total  = matches.length;
-    const wins   = matches.filter(m => m.won).length;
+    const done   = matches.filter(completed);
+    const total  = done.length;
+    const wins   = done.filter(m => m.won).length;
     const losses = total - wins;
 
     // Singles / Dobles
-    const singles  = matches.filter(m => !m.is_doubles);
-    const doubles  = matches.filter(m =>  m.is_doubles);
+    const singles  = done.filter(m => !m.is_doubles);
+    const doubles  = done.filter(m =>  m.is_doubles);
     const sWins    = singles.filter(m => m.won).length;
     const dWins    = doubles.filter(m => m.won).length;
 
@@ -532,25 +530,25 @@
     // Racha actual
     let streak = 0, streakType = '';
     if (total) {
-      const first = matches[0].won;
+      const first = done[0].won;
       streakType = first ? 'victorias' : 'derrotas';
-      for (const m of matches) { if (m.won === first) streak++; else break; }
+      for (const m of done) { if (m.won === first) streak++; else break; }
     }
 
     // Mejor racha histórica
     let bestStreak = 0, curS = 0;
-    [...matches].reverse().forEach(m => {
+    [...done].reverse().forEach(m => {
       curS = m.won ? curS + 1 : 0;
       bestStreak = Math.max(bestStreak, curS);
     });
 
     // Upset rate: victorias vs rivales con MEJOR LK (número más bajo)
-    const vsBetter = matches.filter(m => {
+    const vsBetter = done.filter(m => {
       if (!m.rivals_lk || !m.player_lk) return false;
       const rLk = parseFloat(String(m.rivals_lk).split('/')[0].replace(',', '.'));
       return rLk < m.player_lk;
     });
-    const vsWorse = matches.filter(m => {
+    const vsWorse = done.filter(m => {
       if (!m.rivals_lk || !m.player_lk) return false;
       const rLk = parseFloat(String(m.rivals_lk).split('/')[0].replace(',', '.'));
       return rLk > m.player_lk;
@@ -560,17 +558,17 @@
 
     // Sets ratio, straight sets, 3er set
     let setsW = 0, setsL = 0;
-    matches.forEach(m => {
+    done.forEach(m => {
       parseSets(m.score).forEach(([a, b]) => {
         if (a > b) setsW++; else if (b > a) setsL++;
       });
     });
 
-    const straightWins = matches.filter(m => m.won && parseSets(m.score).length === 2).length;
+    const straightWins = done.filter(m => m.won && parseSets(m.score).length === 2).length;
 
     // 1er set
     let wonFirst = 0, wonFirstMatch = 0, lostFirst = 0, lostFirstMatch = 0;
-    matches.forEach(m => {
+    done.forEach(m => {
       const sets = parseSets(m.score);
       if (!sets.length) return;
       const [a, b] = sets[0];
@@ -580,7 +578,7 @@
 
     // Tiebreaks
     let tbPlayed = 0, tbWon = 0, mtbPlayed = 0, mtbWon = 0;
-    matches.forEach(m => {
+    done.forEach(m => {
       const sets = parseSets(m.score);
       sets.forEach(([a, b], i) => {
         if (a >= 10 || b >= 10) {
@@ -593,7 +591,7 @@
 
     // Bagels (6:0 sets)
     let bagelsW = 0, bagelsL = 0;
-    matches.forEach(m => {
+    done.forEach(m => {
       parseSets(m.score).forEach(([a, b]) => {
         if (a === 6 && b === 0) bagelsW++;
         if (a === 0 && b === 6) bagelsL++;
@@ -601,7 +599,7 @@
     });
 
     // Mejor rival ganado (LK más bajo)
-    const wonM = matches.filter(m => m.won && m.rivals_lk);
+    const wonM = done.filter(m => m.won && m.rivals_lk);
     let bestWinName = '—', bestWinLk = '';
     if (wonM.length) {
       const best = wonM.reduce((acc, m) => {
@@ -613,12 +611,12 @@
 
     // Últimos 30 días
     const cut30 = new Date(); cut30.setDate(cut30.getDate() - 30);
-    const last30  = matches.filter(m => m.match_date && new Date(m.match_date) >= cut30);
+    const last30  = done.filter(m => m.match_date && new Date(m.match_date) >= cut30);
     const last30W = last30.filter(m => m.won).length;
 
     // Tendencia: últimas 10 vs anteriores 10
-    const l10 = matches.slice(0, 10);
-    const p10 = matches.slice(10, 20);
+    const l10 = done.slice(0, 10);
+    const p10 = done.slice(10, 20);
     const l10r = l10.length ? l10.filter(m => m.won).length / l10.length * 100 : null;
     const p10r = p10.length ? p10.filter(m => m.won).length / p10.length * 100 : null;
     const trend = (l10r != null && p10r != null) ? Math.round(l10r - p10r) : null;
@@ -807,8 +805,9 @@
   let pieChartInst = null;
   function renderPieChart(matches) {
     if (pieChartInst) { pieChartInst.destroy(); pieChartInst = null; }
-    const wins   = matches.filter(m => m.won).length;
-    const losses = matches.length - wins;
+    const done   = matches.filter(completed);
+    const wins   = done.filter(m => m.won).length;
+    const losses = done.length - wins;
     pieChartInst = new Chart(el('pieChart'), {
       type: 'doughnut',
       data: {
@@ -821,7 +820,7 @@
         plugins: {
           legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14, boxWidth: 12, color: '#e6edf3' } },
           tooltip: {
-            callbacks: { label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw / matches.length * 100)}%)` },
+            callbacks: { label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw / done.length * 100)}%)` },
             backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
             titleColor: '#e6edf3', bodyColor: '#e6edf3',
           }
@@ -833,7 +832,7 @@
   // ── FORM DOTS ────────────────────────────────────────────────────────────────
 
   function renderForm(matches) {
-    const last10 = matches.slice(0, 10).reverse();
+    const last10 = matches.filter(completed).slice(0, 10).reverse();
     const c = el('formDots');
     if (!last10.length) { c.textContent = 'Sin datos'; return; }
     c.innerHTML = '';
@@ -851,9 +850,10 @@
   // ── SPLIT BARS ───────────────────────────────────────────────────────────────
 
   function renderSplit(matches) {
+    const done = matches.filter(completed);
     const groups = [
-      { label: 'Singles', items: matches.filter(m => !m.is_doubles) },
-      { label: 'Dobles',  items: matches.filter(m =>  m.is_doubles) },
+      { label: 'Singles', items: done.filter(m => !m.is_doubles) },
+      { label: 'Dobles',  items: done.filter(m =>  m.is_doubles) },
     ];
     const c = el('splitBars'); c.innerHTML = '';
     groups.forEach(g => {
@@ -875,7 +875,7 @@
 
   function renderSurfaceStats(matches) {
     const bySurf = { clay: [], carpet: [], hard: [], grass: [] };
-    matches.forEach(m => (bySurf[getSurface(m)] || bySurf.clay).push(m));
+    matches.filter(completed).forEach(m => (bySurf[getSurface(m)] || bySurf.clay).push(m));
 
     [
       ['sClayRate',   'sClayRec',   bySurf.clay,   'Sin datos'],
@@ -896,7 +896,7 @@
     if (monthlyChartInst) { monthlyChartInst.destroy(); monthlyChartInst = null; }
 
     const byMonth = new Map();
-    matches.forEach(m => {
+    matches.filter(completed).forEach(m => {
       if (!m.match_date) return;
       const key = m.match_date.slice(0, 7); // "2025-03"
       if (!byMonth.has(key)) byMonth.set(key, { won: 0, total: 0 });
@@ -978,7 +978,7 @@
     const wonSets  = Object.fromEntries(SET_TYPES.map(k => [k, 0]));
     const lostSets = Object.fromEntries(SET_TYPES.map(k => [k, 0]));
 
-    matches.forEach(m => {
+    matches.filter(completed).forEach(m => {
       parseSets(m.score).forEach(([a, b]) => {
         if (a > b) {
           const key = `${a}:${b}`;
@@ -1038,83 +1038,13 @@
 
   // ── LK DIST ──────────────────────────────────────────────────────────────────
 
-  let lkDistChartInst = null;
-  function renderLkDistChart(matches) {
-    if (lkDistChartInst) { lkDistChartInst.destroy(); lkDistChartInst = null; }
-
-    function parseRivalLk(m) {
-      if (!m.rivals_lk) return null;
-      // Para dobles: "5,4 / 6,2" → promedio de ambos
-      const parts = String(m.rivals_lk)
-        .split('/')
-        .map(s => parseFloat(s.trim().replace(',', '.')))
-        .filter(n => !isNaN(n) && n > 0);
-      return parts.length ? parts.reduce((a, b) => a + b, 0) / parts.length : null;
-    }
-
-    const buckets = new Map(); // lkInt → { won, lost }
-    matches.forEach(m => {
-      const lk = parseRivalLk(m);
-      if (lk == null) return;
-      const key = Math.floor(lk);
-      if (!buckets.has(key)) buckets.set(key, { won: 0, lost: 0 });
-      m.won ? buckets.get(key).won++ : buckets.get(key).lost++;
-    });
-
-    if (!buckets.size) return;
-
-    // Ordenar de mejor rival (LK bajo) a peor (LK alto)
-    const sorted = [...buckets.entries()].sort(([a], [b]) => a - b);
-    const labels = sorted.map(([k]) => `LK ${k}`);
-    const wins   = sorted.map(([, v]) => v.won);
-    const losses = sorted.map(([, v]) => v.lost);
-
-    // Ajustar altura al número de filas
-    const h = Math.max(180, sorted.length * 32);
-    el('lkDistChart').parentElement.style.height = h + 'px';
-
-    lkDistChartInst = new Chart(el('lkDistChart'), {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          { label: 'Ganados', data: wins,   backgroundColor: 'rgba(63,185,80,0.85)', borderRadius: 4, stack: 's' },
-          { label: 'Perdidos', data: losses, backgroundColor: 'rgba(248,81,73,0.85)', borderRadius: 4, stack: 's' },
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        indexAxis: 'y',
-        plugins: {
-          legend: { position: 'bottom', labels: { color: '#e6edf3', font: { size: 11 }, boxWidth: 12, padding: 14 } },
-          tooltip: {
-            mode: 'index',
-            callbacks: {
-              afterFooter: items => {
-                const i = items[0].dataIndex;
-                const total = wins[i] + losses[i];
-                return `Win rate: ${Math.round(wins[i] / total * 100)}%`;
-              }
-            },
-            backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
-            titleColor: '#e6edf3', bodyColor: '#e6edf3', footerColor: '#7d8590',
-          }
-        },
-        scales: {
-          x: { stacked: true, ticks: { color: '#7d8590', font: { size: 10 }, stepSize: 1 }, grid: { color: '#21262d' } },
-          y: { stacked: true, ticks: { color: '#7d8590', font: { size: 11 } }, grid: { color: '#21262d' } }
-        }
-      }
-    });
-  }
-
   // ── VERANO / INVIERNO ────────────────────────────────────────────────────────
 
   function renderSeasonSplit(matches) {
     // Verano: abril (4) – septiembre (9)
     // Invierno: octubre (10) – marzo (3)
-    const verano   = matches.filter(m => { if (!m.match_date) return false; const mo = +m.match_date.slice(5,7); return mo >= 4 && mo <= 9; });
-    const invierno = matches.filter(m => { if (!m.match_date) return false; const mo = +m.match_date.slice(5,7); return mo < 4 || mo > 9; });
+    const verano   = matches.filter(m => { if (!completed(m) || !m.match_date) return false; const mo = +m.match_date.slice(5,7); return mo >= 4 && mo <= 9; });
+    const invierno = matches.filter(m => { if (!completed(m) || !m.match_date) return false; const mo = +m.match_date.slice(5,7); return mo < 4 || mo > 9; });
 
     const c = el('seasonSplit'); c.innerHTML = '';
 
@@ -1145,7 +1075,7 @@
 
   function renderH2H(matches) {
     const map = new Map();
-    matches.filter(m => !m.is_doubles && m.rivals).forEach(m => {
+    matches.filter(m => completed(m) && !m.is_doubles && m.rivals).forEach(m => {
       const key = m.rivals.trim();
       if (!map.has(key)) map.set(key, { name: key, lk: m.rivals_lk, played: 0, won: 0 });
       const r = map.get(key);
@@ -1198,9 +1128,11 @@
         ? isoDate.split('-').reverse().join('.')
         : '';
       if (isoDate) lastDate = isoDate;
-      const res   = m.won
-        ? '<span class="badge w-badge">G</span>'
-        : '<span class="badge l-badge">P</span>';
+      const res = !completed(m)
+        ? '<span class="badge u-badge">?</span>'
+        : m.won
+          ? '<span class="badge w-badge">G</span>'
+          : '<span class="badge l-badge">P</span>';
 
       // Limpiar score (datos viejos pueden tener "LK +0,3" pegado)
       const score = m.score
