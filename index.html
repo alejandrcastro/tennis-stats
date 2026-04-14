@@ -177,6 +177,23 @@
     .trend-down { color: var(--red); }
     .trend-flat { color: var(--muted); }
 
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 12px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .filter-bar .lbl { font-size: 0.68rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+    .period-btn {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .period-btn:hover  { border-color: var(--blue); color: var(--blue); }
+    .period-btn.active { background: rgba(88,166,255,0.1); border-color: var(--blue); color: var(--blue); }
+    .filter-count { margin-left: auto; font-size: 0.72rem; color: var(--muted); }
+
     /* ── MSG ── */
     .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
 
@@ -197,6 +214,17 @@
   <h1 id="playerName">Cargando…</h1>
   <div class="updated" id="updatedAt"></div>
 </header>
+
+<div class="filter-bar">
+  <span class="lbl">Período</span>
+  <button class="period-btn" data-months="1">1M</button>
+  <button class="period-btn" data-months="3">3M</button>
+  <button class="period-btn" data-months="6">6M</button>
+  <button class="period-btn" data-months="12">1A</button>
+  <button class="period-btn" data-months="36">3A</button>
+  <button class="period-btn active" data-months="0">Todo</button>
+  <span class="filter-count" id="filterCount"></span>
+</div>
 
 <main>
 
@@ -232,6 +260,12 @@
         <div id="splitBars" class="split-row"></div>
       </div>
     </div>
+  </div>
+
+  <!-- ── MONTHLY ── -->
+  <div class="card">
+    <div class="card-title">Win Rate mensual</div>
+    <div style="position:relative;height:200px"><canvas id="monthlyChart"></canvas></div>
   </div>
 
   <!-- ── POR TIPO / RIVAL ── -->
@@ -287,6 +321,35 @@
 <script>
   const PLAYER_ID = 'NU3106825';
 
+  // Estado global del dashboard
+  let _allMatches  = [];
+  let _currentLk   = null;
+  let _lkRaw       = null;
+  let _activePeriod = 0;   // 0 = Todo, N = últimos N meses
+
+  function filteredMatches() {
+    if (!_activePeriod) return _allMatches;
+    const cutoff = new Date();
+    cutoff.setMonth(cutoff.getMonth() - _activePeriod);
+    return _allMatches.filter(m => m.match_date && new Date(m.match_date) >= cutoff);
+  }
+
+  function rerender() {
+    const matches = filteredMatches();
+    const count   = matches.length;
+    el('filterCount').textContent = count === _allMatches.length
+      ? `${count} partidos`
+      : `${count} de ${_allMatches.length} partidos`;
+
+    renderStats(matches, _lkRaw, _currentLk);
+    renderPieChart(matches);
+    renderForm(matches);
+    renderSplit(matches);
+    renderMonthlyChart(matches);
+    renderH2H(matches);
+    renderTable(matches);
+  }
+
   // ── HELPERS ──────────────────────────────────────────────────────────────────
 
   // Padding fijo a 3 decimales (máximo en tennis.de)
@@ -327,15 +390,22 @@
         hour: '2-digit', minute: '2-digit'
       });
 
-    const currentLk = parseFloat(String(player.lk).replace(',', '.'));
+    _currentLk  = parseFloat(String(player.lk).replace(',', '.'));
+    _lkRaw      = player.lk;
+    _allMatches = matches;
 
-    renderStats(matches, player.lk, currentLk);
-    renderLkChart(matches, currentLk);
-    renderPieChart(matches);
-    renderForm(matches);
-    renderSplit(matches);
-    renderH2H(matches);
-    renderTable(matches);
+    // Botones de período
+    document.querySelectorAll('.period-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        _activePeriod = parseInt(btn.dataset.months);
+        document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        rerender();
+      });
+    });
+
+    renderLkChart(matches, _currentLk);   // el chart de LK siempre muestra todo + tiene su propio zoom
+    rerender();
   }
 
   // ── STATS ────────────────────────────────────────────────────────────────────
@@ -631,10 +701,12 @@
 
   // ── PIE CHART ────────────────────────────────────────────────────────────────
 
+  let pieChartInst = null;
   function renderPieChart(matches) {
+    if (pieChartInst) { pieChartInst.destroy(); pieChartInst = null; }
     const wins   = matches.filter(m => m.won).length;
     const losses = matches.length - wins;
-    new Chart(el('pieChart'), {
+    pieChartInst = new Chart(el('pieChart'), {
       type: 'doughnut',
       data: {
         labels: ['Ganados', 'Perdidos'],
@@ -693,6 +765,85 @@
           </div>
           <div class="split-bar-track"><div class="split-bar-fill" style="width:${p}%"></div></div>
         </div>`;
+    });
+  }
+
+  // ── MONTHLY WIN RATE ─────────────────────────────────────────────────────────
+
+  let monthlyChartInst = null;
+  function renderMonthlyChart(matches) {
+    if (monthlyChartInst) { monthlyChartInst.destroy(); monthlyChartInst = null; }
+
+    const byMonth = new Map();
+    matches.forEach(m => {
+      if (!m.match_date) return;
+      const key = m.match_date.slice(0, 7); // "2025-03"
+      if (!byMonth.has(key)) byMonth.set(key, { won: 0, total: 0 });
+      const d = byMonth.get(key);
+      d.total++;
+      if (m.won) d.won++;
+    });
+
+    if (!byMonth.size) return;
+
+    const sorted = [...byMonth.entries()].sort(([a], [b]) => a.localeCompare(b));
+    const labels = sorted.map(([k]) => {
+      const [y, m] = k.split('-');
+      return new Date(+y, +m - 1).toLocaleDateString('es-AR', { month: 'short', year: '2-digit' });
+    });
+    const wins   = sorted.map(([, v]) => v.won);
+    const losses = sorted.map(([, v]) => v.total - v.won);
+    const totals = sorted.map(([, v]) => v.total);
+
+    monthlyChartInst = new Chart(el('monthlyChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Ganados',
+            data: wins,
+            backgroundColor: 'rgba(63,185,80,0.85)',
+            borderRadius: 0,
+            stack: 'matches',
+          },
+          {
+            label: 'Perdidos',
+            data: losses,
+            backgroundColor: 'rgba(248,81,73,0.85)',
+            borderRadius: 4,
+            borderSkipped: 'bottom',
+            stack: 'matches',
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            mode: 'index',
+            callbacks: {
+              title: items => labels[items[0].dataIndex],
+              afterFooter: items => {
+                const i = items[0].dataIndex;
+                const pct = Math.round(wins[i] / totals[i] * 100);
+                return `Win rate: ${pct}%`;
+              }
+            },
+            backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
+            titleColor: '#e6edf3', bodyColor: '#e6edf3', footerColor: '#7d8590',
+          }
+        },
+        scales: {
+          x: { stacked: true, ticks: { font: { size: 10 }, color: '#7d8590' }, grid: { color: '#21262d' } },
+          y: {
+            stacked: true,
+            ticks: { font: { size: 10 }, color: '#7d8590', stepSize: 1 },
+            grid: { color: '#21262d' },
+          }
+        }
+      }
     });
   }
 
@@ -765,7 +916,7 @@
       const rival   = m.rivals ?? '—';
       const rivalLk = m.rivals_lk ? `<span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
       const partner = m.partner
-        ? `<span class="partner-txt">con ${m.partner}${m.partner_lk != null ? ` · LK ${fmt(m.partner_lk)}` : ''}</span>`
+        ? `<span class="partner-txt">con ${m.partner}${m.partner_lk != null ? ` · LK ${m.partner_lk.toFixed(1).replace('.', ',')}` : ''}</span>`
         : '';
 
       const myLk = m.player_lk != null ? m.player_lk.toFixed(1).replace('.', ',') : '—';
