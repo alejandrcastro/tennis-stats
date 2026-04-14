@@ -199,8 +199,9 @@
       border-radius: 10px; padding: 2px 8px; font-size: 0.68rem; font-weight: 600;
       cursor: pointer; white-space: nowrap; transition: all 0.15s; border: 1px solid;
     }
-    .surf-btn.clay { background: rgba(180,100,40,0.15); border-color: #b46428; color: #d4884a; }
-    .surf-btn.hard { background: rgba(88,166,255,0.10); border-color: var(--blue);  color: var(--blue); }
+    .surf-btn.clay   { background: rgba(180,100,40,0.15); border-color: #b46428; color: #d4884a; }
+    .surf-btn.carpet { background: rgba(139,21,56,0.18);  border-color: #8b1538; color: #c44d6e; }
+    .surf-btn.hard   { background: rgba(88,166,255,0.10); border-color: var(--blue); color: var(--blue); }
 
     /* ── MSG ── */
     .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
@@ -301,7 +302,7 @@
 
   <!-- ── POR SUPERFICIE ── -->
   <div class="section-label">Por Superficie</div>
-  <div class="stats-grid" style="grid-template-columns:repeat(2,1fr)">
+  <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
     <div class="stat-card">
       <div class="lbl" style="display:flex;align-items:center;gap:6px">
         <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#b46428"></span>
@@ -312,8 +313,16 @@
     </div>
     <div class="stat-card">
       <div class="lbl" style="display:flex;align-items:center;gap:6px">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--blue)"></span>
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#8b1538"></span>
         Carpeta
+      </div>
+      <div class="val" id="sCarpetRate">—</div>
+      <div class="sub-val" id="sCarpetRec"></div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl" style="display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--blue)"></span>
+        Hardcourt
       </div>
       <div class="val" id="sHardRate">—</div>
       <div class="sub-val" id="sHardRec"></div>
@@ -386,14 +395,16 @@
     return _surfaces.get(matchKey(m)) || 'clay';
   }
 
+  const SURF_CYCLE  = ['clay', 'carpet', 'hard'];
+  const SURF_LABELS = { clay: 'Polvo', carpet: 'Carpeta', hard: 'Hardcourt' };
+
   function toggleSurface(key, btn) {
     const current = _surfaces.get(key) || 'clay';
-    const next    = current === 'clay' ? 'hard' : 'clay';
+    const next    = SURF_CYCLE[(SURF_CYCLE.indexOf(current) + 1) % SURF_CYCLE.length];
     _surfaces.set(key, next);
     localStorage.setItem(SURF_STORAGE, JSON.stringify([..._surfaces]));
-    btn.dataset.surface = next;
-    btn.textContent     = next === 'hard' ? 'Carpeta' : 'Polvo';
-    btn.className       = `surf-btn ${next}`;
+    btn.textContent = SURF_LABELS[next];
+    btn.className   = `surf-btn ${next}`;
     renderSurfaceStats(filteredMatches());
   }
 
@@ -846,17 +857,18 @@
   // ── SURFACE STATS ────────────────────────────────────────────────────────────
 
   function renderSurfaceStats(matches) {
-    const clay = matches.filter(m => getSurface(m) === 'clay');
-    const hard = matches.filter(m => getSurface(m) === 'hard');
+    const bySurf = { clay: [], carpet: [], hard: [] };
+    matches.forEach(m => (bySurf[getSurface(m)] || bySurf.clay).push(m));
 
-    const clayW = clay.filter(m => m.won).length;
-    const hardW = hard.filter(m => m.won).length;
-
-    setVal('sClayRate', pct(clayW, clay.length), rate(clayW, clay.length));
-    set('sClayRec',     clay.length ? `${clayW}G – ${clay.length - clayW}P de ${clay.length}` : 'Sin datos');
-
-    setVal('sHardRate', pct(hardW, hard.length), rate(hardW, hard.length));
-    set('sHardRec',     hard.length ? `${hardW}G – ${hard.length - hardW}P de ${hard.length}` : 'Sin partidos en carpeta');
+    [
+      ['sClayRate',   'sClayRec',   bySurf.clay,   'Sin datos'],
+      ['sCarpetRate', 'sCarpetRec', bySurf.carpet, 'Sin partidos en carpeta'],
+      ['sHardRate',   'sHardRec',   bySurf.hard,   'Sin partidos en hardcourt'],
+    ].forEach(([rateId, recId, list, empty]) => {
+      const w = list.filter(m => m.won).length;
+      setVal(rateId, pct(w, list.length), rate(w, list.length));
+      set(recId, list.length ? `${w}G – ${list.length - w}P de ${list.length}` : empty);
+    });
   }
 
   // ── MONTHLY WIN RATE ─────────────────────────────────────────────────────────
@@ -1119,6 +1131,9 @@
         dTxt = (m.lk_change > 0 ? '+' : '') + fmt(m.lk_change);
       }
 
+      const surf    = getSurface(m);
+      const surfKey = matchKey(m).replace(/'/g, "\\'");
+
       return `<tr>
         <td style="white-space:nowrap;color:var(--muted)">${date}</td>
         <td>${res}</td>
@@ -1129,6 +1144,7 @@
         <td style="white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums">${score}</td>
         <td style="white-space:nowrap;font-variant-numeric:tabular-nums">${myLk}</td>
         <td><span class="delta ${dCls}">${dTxt}</span></td>
+        <td><button class="surf-btn ${surf}" data-key="${surfKey}">${SURF_LABELS[surf]}</button></td>
         <td class="ctx-cell" title="${m.context ?? ''}">${m.context ?? '—'}</td>
       </tr>`;
     }).join('');
@@ -1141,6 +1157,10 @@
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
+
+    el('tableWrap').querySelectorAll('.surf-btn').forEach(btn => {
+      btn.addEventListener('click', () => toggleSurface(btn.dataset.key, btn));
+    });
   }
 
   // ── RUN ──────────────────────────────────────────────────────────────────────
