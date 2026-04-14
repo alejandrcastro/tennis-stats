@@ -194,6 +194,14 @@
     .period-btn.active { background: rgba(88,166,255,0.1); border-color: var(--blue); color: var(--blue); }
     .filter-count { margin-left: auto; font-size: 0.72rem; color: var(--muted); }
 
+    /* ── SURFACE TOGGLE ── */
+    .surf-btn {
+      border-radius: 10px; padding: 2px 8px; font-size: 0.68rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: all 0.15s; border: 1px solid;
+    }
+    .surf-btn.clay { background: rgba(180,100,40,0.15); border-color: #b46428; color: #d4884a; }
+    .surf-btn.hard { background: rgba(88,166,255,0.10); border-color: var(--blue);  color: var(--blue); }
+
     /* ── MSG ── */
     .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
 
@@ -202,6 +210,7 @@
     @media (max-width: 680px)  {
       .charts-row { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .season-row { grid-template-columns: 1fr !important; }
       header { padding: 20px 16px 16px; }
       main   { padding: 14px 12px 48px; }
     }
@@ -268,6 +277,18 @@
     <div style="position:relative;height:200px"><canvas id="monthlyChart"></canvas></div>
   </div>
 
+  <!-- ── DISTRIBUCIÓN DE SETS + VERANO/INVIERNO ── -->
+  <div class="season-row" style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+    <div class="card">
+      <div class="card-title">Distribución de Sets</div>
+      <div style="position:relative;height:220px"><canvas id="scoreDistChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Verano vs Invierno</div>
+      <div id="seasonSplit" class="split-row" style="margin-top:8px"></div>
+    </div>
+  </div>
+
   <!-- ── POR TIPO / RIVAL ── -->
   <div class="section-label">Desglose</div>
   <div class="stats-grid">
@@ -276,6 +297,27 @@
     <div class="stat-card"><div class="lbl">Upset Rate</div><div class="val" id="sUpsetRate">—</div><div class="sub-val" id="sUpsetRec"></div></div>
     <div class="stat-card"><div class="lbl">vs Peores</div><div class="val" id="sVsWorseRate">—</div><div class="sub-val" id="sVsWorseRec"></div></div>
     <div class="stat-card"><div class="lbl">Mejor Racha Histórica</div><div class="val green" id="sBestStreak">—</div><div class="sub-val">victorias seguidas</div></div>
+  </div>
+
+  <!-- ── POR SUPERFICIE ── -->
+  <div class="section-label">Por Superficie</div>
+  <div class="stats-grid" style="grid-template-columns:repeat(2,1fr)">
+    <div class="stat-card">
+      <div class="lbl" style="display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#b46428"></span>
+        Polvo de Ladrillo
+      </div>
+      <div class="val" id="sClayRate">—</div>
+      <div class="sub-val" id="sClayRec"></div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl" style="display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--blue)"></span>
+        Carpeta
+      </div>
+      <div class="val" id="sHardRate">—</div>
+      <div class="sub-val" id="sHardRec"></div>
+    </div>
   </div>
 
   <!-- ── SETS ── -->
@@ -327,6 +369,36 @@
   let _lkRaw       = null;
   let _activePeriod = 0;   // 0 = Todo, N = últimos N meses
 
+  // ── SURFACES (localStorage) ───────────────────────────────────────────────────
+
+  const SURF_STORAGE = 'tennis_surfaces_v1';
+
+  function loadSurfaces() {
+    try { return new Map(JSON.parse(localStorage.getItem(SURF_STORAGE) || '[]')); }
+    catch { return new Map(); }
+  }
+
+  function matchKey(m) {
+    return `${m.match_date}|${m.context}|${m.rivals}`;
+  }
+
+  function getSurface(m) {
+    return _surfaces.get(matchKey(m)) || 'clay';
+  }
+
+  function toggleSurface(key, btn) {
+    const current = _surfaces.get(key) || 'clay';
+    const next    = current === 'clay' ? 'hard' : 'clay';
+    _surfaces.set(key, next);
+    localStorage.setItem(SURF_STORAGE, JSON.stringify([..._surfaces]));
+    btn.dataset.surface = next;
+    btn.textContent     = next === 'hard' ? 'Carpeta' : 'Polvo';
+    btn.className       = `surf-btn ${next}`;
+    renderSurfaceStats(filteredMatches());
+  }
+
+  let _surfaces = loadSurfaces();
+
   function filteredMatches() {
     if (!_activePeriod) return _allMatches;
     const cutoff = new Date();
@@ -345,7 +417,10 @@
     renderPieChart(matches);
     renderForm(matches);
     renderSplit(matches);
+    renderSurfaceStats(matches);
     renderMonthlyChart(matches);
+    renderScoreDistChart(matches);
+    renderSeasonSplit(matches);
     renderH2H(matches);
     renderTable(matches);
   }
@@ -768,6 +843,22 @@
     });
   }
 
+  // ── SURFACE STATS ────────────────────────────────────────────────────────────
+
+  function renderSurfaceStats(matches) {
+    const clay = matches.filter(m => getSurface(m) === 'clay');
+    const hard = matches.filter(m => getSurface(m) === 'hard');
+
+    const clayW = clay.filter(m => m.won).length;
+    const hardW = hard.filter(m => m.won).length;
+
+    setVal('sClayRate', pct(clayW, clay.length), rate(clayW, clay.length));
+    set('sClayRec',     clay.length ? `${clayW}G – ${clay.length - clayW}P de ${clay.length}` : 'Sin datos');
+
+    setVal('sHardRate', pct(hardW, hard.length), rate(hardW, hard.length));
+    set('sHardRec',     hard.length ? `${hardW}G – ${hard.length - hardW}P de ${hard.length}` : 'Sin partidos en carpeta');
+  }
+
   // ── MONTHLY WIN RATE ─────────────────────────────────────────────────────────
 
   let monthlyChartInst = null;
@@ -844,6 +935,107 @@
           }
         }
       }
+    });
+  }
+
+  // ── SCORE DISTRIBUTION ───────────────────────────────────────────────────────
+
+  let scoreDistChartInst = null;
+  function renderScoreDistChart(matches) {
+    if (scoreDistChartInst) { scoreDistChartInst.destroy(); scoreDistChartInst = null; }
+
+    const SET_TYPES = ['6:0', '6:1', '6:2', '6:3', '6:4', '7:5', '7:6'];
+    const wonSets  = Object.fromEntries(SET_TYPES.map(k => [k, 0]));
+    const lostSets = Object.fromEntries(SET_TYPES.map(k => [k, 0]));
+
+    matches.forEach(m => {
+      parseSets(m.score).forEach(([a, b]) => {
+        if (a > b) {
+          const key = `${a}:${b}`;
+          if (key in wonSets) wonSets[key]++;
+        } else if (b > a) {
+          const key = `${b}:${a}`;   // normalizar: score del ganador primero
+          if (key in lostSets) lostSets[key]++;
+        }
+      });
+    });
+
+    scoreDistChartInst = new Chart(el('scoreDistChart'), {
+      type: 'bar',
+      data: {
+        labels: SET_TYPES,
+        datasets: [
+          {
+            label: 'Sets ganados',
+            data: SET_TYPES.map(k => wonSets[k]),
+            backgroundColor: 'rgba(63,185,80,0.85)',
+            borderRadius: 4,
+          },
+          {
+            label: 'Sets perdidos',
+            data: SET_TYPES.map(k => lostSets[k]),
+            backgroundColor: 'rgba(248,81,73,0.85)',
+            borderRadius: 4,
+          },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#e6edf3', font: { size: 11 }, boxWidth: 12, padding: 14 }
+          },
+          tooltip: {
+            backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
+            titleColor: '#e6edf3', bodyColor: '#e6edf3',
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#7d8590', font: { size: 10 }, stepSize: 1 },
+            grid: { color: '#21262d' }
+          },
+          y: {
+            ticks: { color: '#7d8590', font: { size: 11 } },
+            grid: { color: '#21262d' }
+          }
+        }
+      }
+    });
+  }
+
+  // ── VERANO / INVIERNO ────────────────────────────────────────────────────────
+
+  function renderSeasonSplit(matches) {
+    // Verano: abril (4) – septiembre (9)
+    // Invierno: octubre (10) – marzo (3)
+    const verano   = matches.filter(m => { if (!m.match_date) return false; const mo = +m.match_date.slice(5,7); return mo >= 4 && mo <= 9; });
+    const invierno = matches.filter(m => { if (!m.match_date) return false; const mo = +m.match_date.slice(5,7); return mo < 4 || mo > 9; });
+
+    const c = el('seasonSplit'); c.innerHTML = '';
+
+    [
+      { label: 'Verano (Abr–Sep)', items: verano,   color: 'var(--yellow)' },
+      { label: 'Invierno (Oct–Mar)', items: invierno, color: 'var(--blue)' },
+    ].forEach(({ label, items, color }) => {
+      if (!items.length) {
+        c.innerHTML += `<div class="split-item"><div class="split-label"><span>${label}</span><span style="color:var(--muted)">—</span></div></div>`;
+        return;
+      }
+      const w = items.filter(m => m.won).length;
+      const p = Math.round(w / items.length * 100);
+      c.innerHTML += `
+        <div class="split-item">
+          <div class="split-label">
+            <span>${label} — <span class="split-record">${w}G ${items.length - w}P</span></span>
+            <span style="color:${color}">${p}%</span>
+          </div>
+          <div class="split-bar-track">
+            <div class="split-bar-fill" style="width:${p}%;background:${color}"></div>
+          </div>
+        </div>`;
     });
   }
 
@@ -945,7 +1137,7 @@
       <table>
         <thead><tr>
           <th>Fecha</th><th>Res.</th><th>Rival / Pareja</th>
-          <th>Score</th><th>Mi LK</th><th>Δ LK</th><th>Competición</th>
+          <th>Score</th><th>Mi LK</th><th>Δ LK</th><th>Sup.</th><th>Competición</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
