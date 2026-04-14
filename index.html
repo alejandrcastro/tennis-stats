@@ -8,16 +8,18 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green:       #2d6a4f;
-      --green-mid:   #40916c;
-      --green-bg:    #d8f3dc;
-      --orange:      #d04a00;
-      --orange-bg:   #fff0eb;
-      --bg:          #f0f4f0;
-      --card:        #ffffff;
-      --text:        #1a1a1a;
-      --muted:       #6c757d;
-      --border:      #e4e8e4;
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #21262d;
+      --border:    #30363d;
+      --text:      #e6edf3;
+      --muted:     #7d8590;
+      --green:     #3fb950;
+      --green-dim: #1a3d23;
+      --red:       #f85149;
+      --red-dim:   #3d1a1a;
+      --blue:      #58a6ff;
+      --yellow:    #d29922;
     }
 
     body {
@@ -29,137 +31,178 @@
 
     /* ── HEADER ── */
     header {
-      background: var(--green);
-      color: white;
-      padding: 24px 32px 18px;
+      padding: 28px 32px 22px;
+      border-bottom: 1px solid var(--border);
     }
-    header h1   { font-size: 1.55rem; font-weight: 800; letter-spacing: -0.02em; }
-    header .sub { font-size: 0.8rem; opacity: 0.6; margin-bottom: 4px; }
-    header .updated { font-size: 0.75rem; opacity: 0.55; margin-top: 6px; }
+    header .sub { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    header h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+    header .updated { font-size: 0.72rem; color: var(--muted); margin-top: 8px; }
 
-    /* ── STAT PILLS ── */
-    .stat-bar {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 1px;
-      background: var(--green-mid);
-    }
-    .stat-pill { background: white; padding: 14px 12px; text-align: center; }
-    .stat-pill .val {
-      font-size: 1.65rem; font-weight: 800;
-      color: var(--green); line-height: 1;
-    }
-    .stat-pill .lbl {
-      font-size: 0.67rem; text-transform: uppercase;
-      letter-spacing: 0.06em; color: var(--muted); margin-top: 4px;
-    }
-
-    /* ── LAYOUT ── */
+    /* ── MAIN ── */
     main {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 22px 22px 48px;
+      padding: 24px 24px 60px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 20px;
     }
-    .row   { display: grid; gap: 18px; }
-    .row-3 { grid-template-columns: 2.2fr 1fr 1fr; }
 
-    /* ── CARDS ── */
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .stat-card .lbl {
+      font-size: 0.67rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .stat-card .val {
+      font-size: 1.9rem; font-weight: 800; line-height: 1;
+    }
+    .stat-card .sub-val {
+      font-size: 0.75rem; color: var(--muted); margin-top: 5px;
+    }
+    .val.green  { color: var(--green); }
+    .val.red    { color: var(--red); }
+    .val.blue   { color: var(--blue); }
+    .val.yellow { color: var(--yellow); }
+
+    /* ── CHARTS ROW ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ── CARD ── */
     .card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 18px 22px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
     }
     .card-title {
-      font-size: 0.7rem; font-weight: 700;
+      font-size: 0.67rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.07em;
       color: var(--muted); margin-bottom: 14px;
     }
-    .chart-wrap { position: relative; height: 210px; }
+    .chart-wrap { position: relative; height: 200px; }
 
-    /* ── FORM ── */
-    .form-row { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-    .form-dot {
-      width: 26px; height: 26px; border-radius: 50%;
+    /* ── FORM DOTS ── */
+    .form-dots { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .dot {
+      width: 28px; height: 28px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.68rem; font-weight: 700; color: white;
+      font-size: 0.7rem; font-weight: 800;
     }
-    .form-dot.w { background: var(--green-mid); }
-    .form-dot.l { background: var(--orange); }
-    .form-lbl   { font-size: 0.7rem; color: var(--muted); margin-left: 4px; }
+    .dot.w { background: var(--green-dim); color: var(--green); }
+    .dot.l { background: var(--red-dim);   color: var(--red); }
+    .form-summary { font-size: 0.75rem; color: var(--muted); margin-top: 8px; }
+
+    /* ── RECORD SPLIT ── */
+    .split-row {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .split-item .split-label {
+      font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;
+      display: flex; justify-content: space-between;
+    }
+    .split-bar-track {
+      background: var(--surface2); border-radius: 4px; height: 7px; overflow: hidden;
+    }
+    .split-bar-fill {
+      height: 100%; border-radius: 4px; background: var(--green);
+      transition: width 0.6s ease;
+    }
+    .split-record {
+      font-size: 0.8rem; font-weight: 700; color: var(--text);
+    }
 
     /* ── TABLE ── */
     .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
     th {
-      text-align: left; padding: 8px 12px;
-      font-size: 0.67rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.05em;
-      color: var(--muted); border-bottom: 2px solid var(--border);
+      text-align: left; padding: 9px 14px;
+      font-size: 0.64rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); border-bottom: 1px solid var(--border);
       white-space: nowrap;
     }
-    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: #f5faf5; }
+    tbody tr:hover td { background: var(--surface2); }
 
     .badge {
-      display: inline-block; padding: 2px 7px;
-      border-radius: 5px; font-size: 0.72rem; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 50%;
+      font-size: 0.7rem; font-weight: 800;
     }
-    .w-badge  { background: var(--green-bg); color: var(--green); }
-    .l-badge  { background: var(--orange-bg); color: var(--orange); }
-    .d-badge  { background: #ebebf5; color: #5555aa; margin-left: 3px; }
+    .w-badge { background: var(--green-dim); color: var(--green); }
+    .l-badge { background: var(--red-dim);   color: var(--red); }
 
-    .delta      { font-weight: 700; font-size: 0.8rem; }
-    .delta.pos  { color: var(--green-mid); }
-    .delta.neg  { color: var(--orange); }
+    .delta { font-weight: 700; font-size: 0.82rem; }
+    .delta.pos  { color: var(--green); }
+    .delta.neg  { color: var(--red); }
     .delta.zero { color: var(--muted); }
 
-    .rival-name { font-weight: 600; }
-    .rival-lk, .partner-txt { font-size: 0.75rem; color: var(--muted); display: block; }
+    .rival-name  { font-weight: 600; }
+    .rival-lk    { font-size: 0.73rem; color: var(--muted); display: block; }
+    .partner-txt { font-size: 0.73rem; color: var(--muted); display: block; }
+    .ctx-cell    { font-size: 0.78rem; color: var(--muted); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .ctx-cell {
-      max-width: 200px; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis;
-      font-size: 0.78rem; color: var(--muted);
+    /* ── STREAK ── */
+    .streak-val { display: flex; align-items: baseline; gap: 6px; }
+    .streak-val .val { font-size: 2.4rem; }
+    .streak-type { font-size: 0.8rem; font-weight: 600; }
+
+    /* ── MSG ── */
+    .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
+
+    @media (max-width: 1000px) {
+      .charts-row { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
-    /* ── LOADING / ERROR ── */
-    .msg { text-align: center; padding: 40px; color: var(--muted); font-size: 0.95rem; }
-
-    @media (max-width: 900px) {
-      .stat-bar { grid-template-columns: repeat(3, 1fr); }
-      .row-3    { grid-template-columns: 1fr; }
-      header    { padding: 18px 16px 14px; }
-      main      { padding: 14px 12px 40px; }
-    }
-    @media (max-width: 500px) {
-      .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 640px) {
+      .charts-row { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      header { padding: 20px 16px 16px; }
+      main { padding: 14px 12px 48px; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="sub">tennis.de · Estadísticas</div>
-  <h1>🎾 <span id="playerName">Cargando…</span></h1>
+  <div class="sub">tennis.de · Stats</div>
+  <h1 id="playerName">Cargando…</h1>
   <div class="updated" id="updatedAt"></div>
 </header>
 
-<div class="stat-bar">
-  <div class="stat-pill"><div class="val" id="sLk">—</div><div class="lbl">LK Actual</div></div>
-  <div class="stat-pill"><div class="val" id="sTotal">—</div><div class="lbl">Partidos</div></div>
-  <div class="stat-pill"><div class="val" id="sWins">—</div><div class="lbl">Ganados</div></div>
-  <div class="stat-pill"><div class="val" id="sRate">—</div><div class="lbl">Win Rate</div></div>
-  <div class="stat-pill"><div class="val" id="sSingles">—</div><div class="lbl">Singles</div></div>
-  <div class="stat-pill"><div class="val" id="sDoubles">—</div><div class="lbl">Dobles</div></div>
-</div>
-
 <main>
-  <div class="row row-3">
+
+  <!-- STAT CARDS -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="lbl">LK Actual</div><div class="val blue" id="sLk">—</div></div>
+    <div class="stat-card"><div class="lbl">Win Rate</div><div class="val" id="sRate">—</div><div class="sub-val" id="sRecord"></div></div>
+    <div class="stat-card"><div class="lbl">ΔLK Total</div><div class="val" id="sDelta">—</div><div class="sub-val" id="sDeltaSub"></div></div>
+    <div class="stat-card"><div class="lbl">Racha Actual</div><div class="streak-val"><div class="val" id="sStreak">—</div><div class="streak-type" id="sStreakType"></div></div></div>
+    <div class="stat-card"><div class="lbl">Singles</div><div class="val" id="sSinglesRate">—</div><div class="sub-val" id="sSinglesRec"></div></div>
+    <div class="stat-card"><div class="lbl">Dobles</div><div class="val" id="sDoublesRate">—</div><div class="sub-val" id="sDoublesRec"></div></div>
+    <div class="stat-card"><div class="lbl">Mejor Rival</div><div class="val yellow" id="sBestWin" style="font-size:1.2rem;line-height:1.3"></div><div class="sub-val" id="sBestWinSub"></div></div>
+    <div class="stat-card"><div class="lbl">ΔLK Promedio</div><div class="val" id="sAvgDelta">—</div><div class="sub-val">por partido</div></div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row">
     <div class="card">
       <div class="card-title">Evolución de LK</div>
       <div class="chart-wrap"><canvas id="lkChart"></canvas></div>
@@ -169,78 +212,152 @@
       <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title">Últimas 10</div>
-      <div id="formDots" class="form-row msg">…</div>
+      <div class="card-title">Últimas 10 · forma</div>
+      <div id="formDots" class="form-dots msg">…</div>
+      <div id="formSummary" class="form-summary"></div>
+      <div style="margin-top:18px">
+        <div class="card-title">Singles vs Dobles</div>
+        <div id="splitBars" class="split-row"></div>
+      </div>
     </div>
   </div>
 
+  <!-- TABLE -->
   <div class="card">
     <div class="card-title">Historial de Partidos</div>
     <div class="table-wrap">
-      <div id="tableWrap" class="msg">Cargando partidos…</div>
+      <div id="tableWrap" class="msg">Cargando…</div>
     </div>
   </div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
-  // ── CONFIG ───────────────────────────────────────────────────────────────────
   const PLAYER_ID = 'NU3106825';
-  // ─────────────────────────────────────────────────────────────────────────────
 
+  // Máximo 3 decimales en tennis.de — padding fijo para alinear columna
+  function fmt(v) {
+    return v.toFixed(3).replace('.', ',');
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────────────────────
   async function init() {
     const res = await fetch('./data.json');
     if (!res.ok) throw new Error(`No se pudo cargar data.json (${res.status})`);
     const data = await res.json();
 
-    const player = data.players.find(p => p.id === PLAYER_ID) ?? data.players[0];
-    const matches = player.matches ?? [];
+    const player  = data.players.find(p => p.id === PLAYER_ID) ?? data.players[0];
+    const matches = (player.matches ?? []).slice().sort((a, b) =>
+      (b.match_date ?? '').localeCompare(a.match_date ?? '')
+    );
 
     document.getElementById('playerName').textContent = player.name;
     document.getElementById('updatedAt').textContent  =
-      'Actualizado: ' + new Date(data.generated_at).toLocaleDateString('es-AR', {
-        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      'Actualizado: ' + new Date(data.generated_at).toLocaleString('es-AR', {
+        day: 'numeric', month: 'long', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
       });
 
     renderStats(matches, player.lk);
     renderLkChart(matches, parseFloat(String(player.lk).replace(',', '.')));
     renderPieChart(matches);
     renderForm(matches);
+    renderSplit(matches);
     renderTable(matches);
   }
 
-  // ── STATS BAR ────────────────────────────────────────────────────────────────
+  // ── STATS ────────────────────────────────────────────────────────────────────
   function renderStats(matches, lkRaw) {
+    const total   = matches.length;
     const wins    = matches.filter(m => m.won).length;
-    const singles = matches.filter(m => !m.is_doubles).length;
-    const doubles = matches.filter(m =>  m.is_doubles).length;
-    const rate    = matches.length ? Math.round(wins / matches.length * 100) : 0;
-    const lk      = typeof lkRaw === 'number'
+    const losses  = total - wins;
+    const rate    = total ? Math.round(wins / total * 100) : 0;
+
+    const singles = matches.filter(m => !m.is_doubles);
+    const doubles = matches.filter(m =>  m.is_doubles);
+    const sWins   = singles.filter(m => m.won).length;
+    const dWins   = doubles.filter(m => m.won).length;
+    const sRate   = singles.length ? Math.round(sWins / singles.length * 100) : null;
+    const dRate   = doubles.length ? Math.round(dWins / doubles.length * 100) : null;
+
+    // Delta total
+    const deltas  = matches.map(m => m.lk_change).filter(d => d != null);
+    const deltaSum = deltas.reduce((a, b) => a + b, 0);
+    const deltaAvg = deltas.length ? deltaSum / deltas.length : null;
+
+    // Racha actual
+    let streak = 0, streakType = '';
+    if (total) {
+      const first = matches[0].won;
+      streakType = first ? 'victorias' : 'derrotas';
+      for (const m of matches) {
+        if (m.won === first) streak++;
+        else break;
+      }
+    }
+
+    // Mejor rival ganado (menor LK rival)
+    const wonMatches = matches.filter(m => m.won && m.rivals_lk);
+    let bestWinName = '—', bestWinLk = '';
+    if (wonMatches.length) {
+      const best = wonMatches.reduce((acc, m) => {
+        const lk = parseFloat(String(m.rivals_lk).split('/')[0].trim().replace(',', '.'));
+        return lk < acc.lk ? { m, lk } : acc;
+      }, { m: null, lk: Infinity });
+      if (best.m) {
+        bestWinName = best.m.rivals.split('/')[0].trim();
+        bestWinLk   = `LK ${best.m.rivals_lk}`;
+      }
+    }
+
+    // LK actual formateado
+    const lk = typeof lkRaw === 'number'
       ? lkRaw.toFixed(1).replace('.', ',')
       : String(lkRaw ?? '—');
 
-    document.getElementById('sLk').textContent     = lk;
-    document.getElementById('sTotal').textContent   = matches.length;
-    document.getElementById('sWins').textContent    = wins;
-    document.getElementById('sRate').textContent    = rate + '%';
-    document.getElementById('sSingles').textContent = singles;
-    document.getElementById('sDoubles').textContent = doubles;
+    document.getElementById('sLk').textContent        = lk;
+    document.getElementById('sRate').textContent      = rate + '%';
+    document.getElementById('sRate').className        = `val ${rate >= 50 ? 'green' : 'red'}`;
+    document.getElementById('sRecord').textContent    = `${wins}G – ${losses}P de ${total}`;
+
+    const dSign = deltaSum > 0 ? '+' : '';
+    document.getElementById('sDelta').textContent     = deltaSum
+      ? dSign + fmt(deltaSum)
+      : '—';
+    document.getElementById('sDelta').className       = `val ${deltaSum < 0 ? 'green' : deltaSum > 0 ? 'red' : ''}`;
+    document.getElementById('sDeltaSub').textContent  = `en ${deltas.length} partidos con dato`;
+
+    document.getElementById('sStreak').textContent    = streak || '—';
+    document.getElementById('sStreak').className      = `val ${streak > 0 && streakType === 'victorias' ? 'green' : streak > 0 ? 'red' : ''}`;
+    document.getElementById('sStreakType').textContent = streak ? streakType : '';
+
+    document.getElementById('sSinglesRate').textContent = sRate != null ? sRate + '%' : '—';
+    document.getElementById('sSinglesRate').className   = `val ${sRate >= 50 ? 'green' : 'red'}`;
+    document.getElementById('sSinglesRec').textContent  = singles.length ? `${sWins}G – ${singles.length - sWins}P` : 'Sin datos';
+
+    document.getElementById('sDoublesRate').textContent = dRate != null ? dRate + '%' : '—';
+    document.getElementById('sDoublesRate').className   = `val ${dRate >= 50 ? 'green' : 'red'}`;
+    document.getElementById('sDoublesRec').textContent  = doubles.length ? `${dWins}G – ${doubles.length - dWins}P` : 'Sin datos';
+
+    document.getElementById('sBestWin').textContent    = bestWinName;
+    document.getElementById('sBestWinSub').textContent = bestWinLk;
+
+    document.getElementById('sAvgDelta').textContent   = deltaAvg != null
+      ? (deltaAvg > 0 ? '+' : '') + fmt(deltaAvg)
+      : '—';
+    document.getElementById('sAvgDelta').className = `val ${deltaAvg < 0 ? 'green' : deltaAvg > 0 ? 'red' : ''}`;
   }
 
   // ── LK CHART ─────────────────────────────────────────────────────────────────
   function renderLkChart(matches, currentLk) {
-    // Matches vienen ordenados desc; los revertimos para oldest→newest
     const points = [...matches]
       .filter(m => m.player_lk != null && m.match_date)
       .reverse()
       .map(m => ({ x: m.match_date, y: m.player_lk }));
 
-    // Agregar el LK actual como punto final si es distinto
-    if (currentLk && points.length) {
-      const today = new Date().toISOString().slice(0, 10);
-      if (points.at(-1).y !== currentLk) {
-        points.push({ x: today, y: currentLk });
-      }
+    if (currentLk && points.length && points.at(-1).y !== currentLk) {
+      points.push({ x: new Date().toISOString().slice(0, 10), y: currentLk });
     }
 
     new Chart(document.getElementById('lkChart'), {
@@ -249,9 +366,9 @@
         labels: points.map(p => p.x),
         datasets: [{
           data: points.map(p => p.y),
-          borderColor: '#40916c',
-          backgroundColor: 'rgba(64,145,108,0.09)',
-          pointRadius: 4, pointBackgroundColor: '#40916c',
+          borderColor: '#3fb950',
+          backgroundColor: 'rgba(63,185,80,0.07)',
+          pointRadius: 4, pointBackgroundColor: '#3fb950',
           pointHoverRadius: 6, tension: 0.35, fill: true, borderWidth: 2,
         }]
       },
@@ -259,14 +376,21 @@
         responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: { callbacks: { label: c => ` LK ${c.raw.toFixed(1).replace('.', ',')}` } }
+          tooltip: {
+            callbacks: { label: c => ` LK ${c.raw.toFixed(1).replace('.', ',')}` },
+            backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
+            titleColor: '#e6edf3', bodyColor: '#e6edf3',
+          }
         },
         scales: {
-          x: { ticks: { maxTicksLimit: 7, font: { size: 10 } }, grid: { display: false } },
+          x: {
+            ticks: { maxTicksLimit: 7, font: { size: 10 }, color: '#7d8590' },
+            grid: { color: '#21262d' }
+          },
           y: {
-            reverse: true,  // LK más bajo = mejor → va arriba en el gráfico
-            ticks: { font: { size: 11 }, callback: v => v.toFixed(1).replace('.', ',') },
-            grid: { color: '#f0f0f0' }
+            reverse: true,
+            ticks: { font: { size: 11 }, color: '#7d8590', callback: v => v.toFixed(1).replace('.', ',') },
+            grid: { color: '#21262d' }
           }
         }
       }
@@ -283,86 +407,116 @@
         labels: ['Ganados', 'Perdidos'],
         datasets: [{
           data: [wins, losses],
-          backgroundColor: ['#40916c', '#d04a00'],
-          borderWidth: 0, hoverOffset: 4,
+          backgroundColor: ['#3fb950', '#f85149'],
+          borderColor: ['#1a3d23', '#3d1a1a'],
+          borderWidth: 3, hoverOffset: 4,
         }]
       },
       options: {
-        responsive: true, maintainAspectRatio: false, cutout: '62%',
+        responsive: true, maintainAspectRatio: false, cutout: '65%',
         plugins: {
-          legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14, boxWidth: 12 } },
+          legend: {
+            position: 'bottom',
+            labels: { font: { size: 12 }, padding: 14, boxWidth: 12, color: '#e6edf3' }
+          },
           tooltip: {
             callbacks: {
               label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw / matches.length * 100)}%)`
-            }
+            },
+            backgroundColor: '#21262d', borderColor: '#30363d', borderWidth: 1,
+            titleColor: '#e6edf3', bodyColor: '#e6edf3',
           }
         }
       }
     });
   }
 
-  // ── FORM ─────────────────────────────────────────────────────────────────────
+  // ── FORM DOTS ────────────────────────────────────────────────────────────────
   function renderForm(matches) {
     const last10 = matches.slice(0, 10).reverse();
     const container = document.getElementById('formDots');
     if (!last10.length) { container.textContent = 'Sin datos'; return; }
     container.innerHTML = '';
     last10.forEach(m => {
-      const dot = document.createElement('div');
-      dot.className = `form-dot ${m.won ? 'w' : 'l'}`;
-      dot.title = `${m.match_date ?? ''} · ${m.rivals ?? ''}`;
-      dot.textContent = m.won ? 'G' : 'P';
-      container.appendChild(dot);
+      const d = document.createElement('div');
+      d.className = `dot ${m.won ? 'w' : 'l'}`;
+      d.title = `${m.match_date ?? ''} · ${m.rivals ?? ''}`;
+      d.textContent = m.won ? 'G' : 'P';
+      container.appendChild(d);
     });
-    const lbl = document.createElement('span');
-    lbl.className = 'form-lbl';
-    lbl.textContent = `${last10.filter(m => m.won).length}/${last10.length}`;
-    container.appendChild(lbl);
+    const w10 = last10.filter(m => m.won).length;
+    document.getElementById('formSummary').textContent =
+      `${w10} victorias en los últimos ${last10.length} partidos`;
+  }
+
+  // ── SPLIT BARS ───────────────────────────────────────────────────────────────
+  function renderSplit(matches) {
+    const container = document.getElementById('splitBars');
+    const groups = [
+      { label: 'Singles', items: matches.filter(m => !m.is_doubles) },
+      { label: 'Dobles',  items: matches.filter(m =>  m.is_doubles) },
+    ];
+    container.innerHTML = '';
+    groups.forEach(g => {
+      if (!g.items.length) return;
+      const w = g.items.filter(m => m.won).length;
+      const l = g.items.length - w;
+      const pct = Math.round(w / g.items.length * 100);
+      container.innerHTML += `
+        <div class="split-item">
+          <div class="split-label">
+            <span>${g.label} — <span class="split-record">${w}G ${l}P</span></span>
+            <span style="color:var(--green)">${pct}%</span>
+          </div>
+          <div class="split-bar-track">
+            <div class="split-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    });
   }
 
   // ── TABLE ─────────────────────────────────────────────────────────────────────
   function renderTable(matches) {
     if (!matches.length) {
-      document.getElementById('tableWrap').innerHTML =
-        '<div class="msg">No hay partidos registrados.</div>';
+      document.getElementById('tableWrap').innerHTML = '<div class="msg">No hay partidos.</div>';
       return;
     }
 
     const rows = matches.map(m => {
-      // Fecha: "2026-03-08" → "08.03.2026"
-      const date = m.match_date
+      const date   = m.match_date
         ? m.match_date.slice(0, 10).split('-').reverse().join('.')
         : '—';
 
-      const res  = m.won
+      const res    = m.won
         ? '<span class="badge w-badge">G</span>'
         : '<span class="badge l-badge">P</span>';
-      const type = m.is_doubles ? '<span class="badge d-badge">D</span>' : '';
 
-      const rival     = m.rivals ?? '—';
-      const rivalLk   = m.rivals_lk ? `<span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
-      const partnerTx = m.partner
-        ? `<span class="partner-txt">con ${m.partner}${m.partner_lk != null ? ` (${m.partner_lk.toFixed(1).replace('.', ',')})` : ''}</span>`
+      const rival    = m.rivals ?? '—';
+      const rivalLk  = m.rivals_lk
+        ? `<span class="rival-lk">LK ${m.rivals_lk}</span>` : '';
+      const partner  = m.partner
+        ? `<span class="partner-txt">con ${m.partner}${m.partner_lk != null ? ` · LK ${m.partner_lk.toFixed(1).replace('.', ',')}` : ''}</span>`
         : '';
 
-      const myLk  = m.player_lk != null ? m.player_lk.toFixed(1).replace('.', ',') : '—';
-      const score = m.score ?? '—';
+      const myLk   = m.player_lk != null ? m.player_lk.toFixed(1).replace('.', ',') : '—';
+      const score  = m.score ?? '—';
 
       let dCls = 'zero', dTxt = '—';
       if (m.lk_change != null) {
-        dCls = m.lk_change > 0 ? 'pos' : m.lk_change < 0 ? 'neg' : 'zero';
-        dTxt = (m.lk_change > 0 ? '+' : '') + m.lk_change.toFixed(1).replace('.', ',');
+        // En tenis.de LK menor = mejor; delta negativo = mejoraste
+        dCls = m.lk_change < 0 ? 'pos' : m.lk_change > 0 ? 'neg' : 'zero';
+        dTxt = (m.lk_change > 0 ? '+' : '') + fmt(m.lk_change);
       }
 
       return `<tr>
-        <td style="white-space:nowrap">${date}</td>
-        <td>${res}${type}</td>
+        <td style="white-space:nowrap;color:var(--muted)">${date}</td>
+        <td>${res}</td>
         <td>
           <span class="rival-name">${rival}</span>
-          ${rivalLk}${partnerTx}
+          ${rivalLk}${partner}
         </td>
-        <td style="white-space:nowrap;font-weight:600">${score}</td>
-        <td style="white-space:nowrap">${myLk}</td>
+        <td style="white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums">${score}</td>
+        <td style="white-space:nowrap;font-variant-numeric:tabular-nums">${myLk}</td>
         <td><span class="delta ${dCls}">${dTxt}</span></td>
         <td class="ctx-cell" title="${m.context ?? ''}">${m.context ?? '—'}</td>
       </tr>`;
@@ -371,8 +525,13 @@
     document.getElementById('tableWrap').innerHTML = `
       <table>
         <thead><tr>
-          <th>Fecha</th><th>Res.</th><th>Rival</th>
-          <th>Score</th><th>Mi LK</th><th>Δ LK</th><th>Competición</th>
+          <th>Fecha</th>
+          <th>Res.</th>
+          <th>Rival / Pareja</th>
+          <th>Score</th>
+          <th>Mi LK</th>
+          <th>Δ LK</th>
+          <th>Competición</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
