@@ -199,9 +199,10 @@
       border-radius: 10px; padding: 2px 8px; font-size: 0.68rem; font-weight: 600;
       cursor: pointer; white-space: nowrap; transition: all 0.15s; border: 1px solid;
     }
-    .surf-btn.clay   { background: rgba(180,100,40,0.15); border-color: #b46428; color: #d4884a; }
-    .surf-btn.carpet { background: rgba(139,21,56,0.18);  border-color: #8b1538; color: #c44d6e; }
+    .surf-btn.clay   { background: rgba(180,100,40,0.15); border-color: #b46428;  color: #d4884a; }
+    .surf-btn.carpet { background: rgba(139,21,56,0.18);  border-color: #8b1538;  color: #c44d6e; }
     .surf-btn.hard   { background: rgba(88,166,255,0.10); border-color: var(--blue); color: var(--blue); }
+    .surf-btn.grass  { background: rgba(74,222,128,0.10); border-color: #4ade80;  color: #4ade80; }
 
     /* ── MSG ── */
     .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
@@ -302,7 +303,7 @@
 
   <!-- ── POR SUPERFICIE ── -->
   <div class="section-label">Por Superficie</div>
-  <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+  <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
     <div class="stat-card">
       <div class="lbl" style="display:flex;align-items:center;gap:6px">
         <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#b46428"></span>
@@ -326,6 +327,14 @@
       </div>
       <div class="val" id="sHardRate">—</div>
       <div class="sub-val" id="sHardRec"></div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl" style="display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#4ade80"></span>
+        Césped Artificial
+      </div>
+      <div class="val" id="sGrassRate">—</div>
+      <div class="sub-val" id="sGrassRec"></div>
     </div>
   </div>
 
@@ -395,10 +404,11 @@
     return _surfaces.get(matchKey(m)) || 'clay';
   }
 
-  const SURF_CYCLE  = ['clay', 'carpet', 'hard'];
-  const SURF_LABELS = { clay: 'Polvo', carpet: 'Carpeta', hard: 'Hardcourt' };
+  const SURF_CYCLE  = ['clay', 'carpet', 'hard', 'grass'];
+  const SURF_LABELS = { clay: 'Polvo', carpet: 'Carpeta', hard: 'Hardcourt', grass: 'Grass' };
 
-  function toggleSurface(key, btn) {
+  function toggleSurface(rawKey, btn) {
+    const key     = decodeURIComponent(rawKey);
     const current = _surfaces.get(key) || 'clay';
     const next    = SURF_CYCLE[(SURF_CYCLE.indexOf(current) + 1) % SURF_CYCLE.length];
     _surfaces.set(key, next);
@@ -857,13 +867,14 @@
   // ── SURFACE STATS ────────────────────────────────────────────────────────────
 
   function renderSurfaceStats(matches) {
-    const bySurf = { clay: [], carpet: [], hard: [] };
+    const bySurf = { clay: [], carpet: [], hard: [], grass: [] };
     matches.forEach(m => (bySurf[getSurface(m)] || bySurf.clay).push(m));
 
     [
       ['sClayRate',   'sClayRec',   bySurf.clay,   'Sin datos'],
       ['sCarpetRate', 'sCarpetRec', bySurf.carpet, 'Sin partidos en carpeta'],
       ['sHardRate',   'sHardRec',   bySurf.hard,   'Sin partidos en hardcourt'],
+      ['sGrassRate',  'sGrassRec',  bySurf.grass,  'Sin partidos en grass'],
     ].forEach(([rateId, recId, list, empty]) => {
       const w = list.filter(m => m.won).length;
       setVal(rateId, pct(w, list.length), rate(w, list.length));
@@ -1132,7 +1143,7 @@
       }
 
       const surf    = getSurface(m);
-      const surfKey = matchKey(m).replace(/'/g, "\\'");
+      const surfKey = encodeURIComponent(matchKey(m));
 
       return `<tr>
         <td style="white-space:nowrap;color:var(--muted)">${date}</td>
