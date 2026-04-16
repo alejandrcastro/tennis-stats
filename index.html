@@ -241,7 +241,7 @@
     .tab-btn:hover  { color: var(--text); }
     .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
     .tab-panel { display: none; }
-    .tab-panel.active { display: contents; }
+    .tab-panel.active { display: flex; flex-direction: column; gap: 20px; }
 
     /* ── MSG ── */
     .msg { text-align: center; padding: 36px; color: var(--muted); font-size: 0.9rem; }
@@ -630,6 +630,12 @@
         el('panel' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1)).classList.add('active');
         // Ocultar filtro de período en H2H (no aplica)
         el('periodBar').style.display = btn.dataset.tab === 'h2h' ? 'none' : '';
+        // Resize charts al volver a Stats (estaban en display:none)
+        if (btn.dataset.tab === 'stats') {
+          requestAnimationFrame(() => {
+            [lkChartInst, pieChartInst, monthlyChartInst, scoreDistChartInst].forEach(c => c && c.resize());
+          });
+        }
       });
     });
 
@@ -667,8 +673,9 @@
     });
     el('csvBtn').addEventListener('click', () => exportCSV(filteredMatches()));
 
-    renderLkChart(matches, _currentLk);   // el chart de LK siempre muestra todo + tiene su propio zoom
     rerender();
+    // LK chart después del primer paint para que el canvas tenga dimensiones reales
+    requestAnimationFrame(() => renderLkChart(matches, _currentLk));
   }
 
   // ── STATS ────────────────────────────────────────────────────────────────────
